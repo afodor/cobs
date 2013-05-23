@@ -69,18 +69,6 @@ public class TestMcBasc extends TestCase
 		
 		int[][] metric = McBASCCovariance.getMaxhomMetric();
 		
-		List<Double> sumList = new ArrayList<Double>();
-		
-		
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('A')][MapResiduesToIndex.getIndex('A')]));
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('A')][MapResiduesToIndex.getIndex('G')]));
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('A')][MapResiduesToIndex.getIndex('H')]));
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('G')][MapResiduesToIndex.getIndex('A')]));
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('G')][MapResiduesToIndex.getIndex('G')]));
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('G')][MapResiduesToIndex.getIndex('H')]));
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('H')][MapResiduesToIndex.getIndex('A')]));
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('H')][MapResiduesToIndex.getIndex('G')]));
-		sumList.add( new Double (metric[ MapResiduesToIndex.getIndex('H')][MapResiduesToIndex.getIndex('H')]));
 		Alignment a = new Alignment( "a",  list );
 
 		McBASCCovariance mcBasc = new McBASCCovariance( a );
