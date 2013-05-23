@@ -1,17 +1,11 @@
 package parsingGrouping;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import averagesAndOutput.GroupOfColumnsInterface;
 
-import utils.ConfigReader;
 import utils.MapResiduesToIndex;
 import utils.Pearson;
 
@@ -23,8 +17,6 @@ import covariance.parsers.FastaSequence;
 public class COBS implements GroupOfColumnsInterface
 {
 
-
-	
 	private static int[][] substitutionMatrix;
 
 	static
@@ -43,59 +35,10 @@ public class COBS implements GroupOfColumnsInterface
 
 
 
-	public static void main(String[] args) throws Exception
-	{
-		
-	    File relative = new File("delete.me");
-	    int correctLengthOfPath = relative.getAbsolutePath().length() - 10 ;
-	    String testedFasta = relative.getAbsolutePath().substring(0,correctLengthOfPath) + File.separator + "src" + File.separator + "AdoHcyase.fasta";
-		
-		List<FastaSequence> alignment = FastaSequence.readFastaFile(testedFasta);
-
-		int length = alignment.get(0).getSequence().length();
-
-		for( FastaSequence fs : alignment)
-			if (fs.getSequence().length() != length)
-				throw new Exception("No");			
-
-		BufferedWriter writer = new BufferedWriter(new FileWriter(new File( 
-				ConfigReader.getCleanroom() + File.separator + 
-				"comparison.txt")));
-
-		writer.write("COBS\tscoreFromGlobalAlignment\n");
-
-		BufferedReader reader = new BufferedReader(new FileReader(new File( 
-				relative.getAbsolutePath().substring(0,correctLengthOfPath) + File.separator + "src" + File.separator +
-				"AdoHcyase.fasta.output.csv")));
-
-		reader.readLine();
-
-		for(String s = reader.readLine(); 
-				s != null;
-				s = reader.readLine())
-		{
-			String[] splits = s.split(",");
-			double sum = 
-					getScoreFromGlobalAlignment(
-							alignment,
-							Integer.parseInt(splits[1]), 
-							Integer.parseInt(splits[2]), 
-							Integer.parseInt(splits[3]), 
-							Integer.parseInt(splits[4]),
-							substitutionMatrix);
-
-			writer.write(splits[9] + "\t");
-			writer.write(sum + "\n");
-			writer.flush();
-			System.out.println(splits[1] + " " + splits[2]);
-		}
-
-		reader.readLine();
-
-		reader.close();
-	}
-
-	private static double getSubstitutionMatrixSum( String s1, String s2 , int[][] substitutionMatrix)
+	/*
+	 * Made public to allow for testing by test.TestCobs
+	 */
+	public static double getSubstitutionMatrixSum( String s1, String s2 , int[][] substitutionMatrix)
 			throws Exception
 			{
 		if(s1.length() != s2.length())
