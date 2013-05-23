@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utils.MapResiduesToIndex;
+import utils.Pearson;
 import utils.TTest;
 import covariance.algorithms.McBASCCovariance;
 import covariance.datacontainers.Alignment;
@@ -57,6 +58,7 @@ public class TestMcBasc extends TestCase
 		
 		assertEquals( mcBasc.getSds()[0], TTest.getStDev(sumList), 0.001);
 		assertEquals( mcBasc.getSds()[1], TTest.getStDev(sumList), 0.001);
+		
 	}
 	
 	public void testPerfectConservation() throws Exception
@@ -85,8 +87,55 @@ public class TestMcBasc extends TestCase
 		Double expectedScore = 0.0;
 		
 		assertEquals(expectedScore,finalScore);
-
+	}
+	
+	public void testAgainstReimplementation(  ) throws Exception
+	{
+		int[][] metric = McBASCCovariance.getMaxhomMetric();
+		List<AlignmentLine> list = new ArrayList<>();
 		
-
+		for( int x=0; x < 500; x++)
+			list.add(new AlignmentLine("" +  x, TestCobs.getRandomProtein(2)));
+		
+		Alignment a= new Alignment("Test", list);
+		
+		double fromReimplementation = 
+				getMcBasc(a.getColumnAsString(0), 
+						a.getColumnAsString(1), metric);
+		System.out.println("From reimplementation" + fromReimplementation );
+		
+		McBASCCovariance mcbascCovariane = new McBASCCovariance(a);
+		
+		double fromPackage = mcbascCovariane.getScore(a, 0, 1);
+		
+		System.out.println( "From package " + fromPackage  );
+		
+		assertEquals(fromPackage, fromReimplementation,0.001);
+	}
+	
+	private static double getMcBasc(String s1, String s2, int [][] sMatrix) throws Exception
+	{
+		if( s1.length() != s2.length())
+			throw new Exception("No");
+		
+		List<Double> listI = new ArrayList<>();
+		List<Double> listJ = new ArrayList<>();
+		
+		for( int k=0; k < s1.length()-1; k++)
+		{
+			int iCharForK = MapResiduesToIndex.getIndex(s1.charAt(k));
+			int jCharForK = MapResiduesToIndex.getIndex(s2.charAt(k));
+			
+			for(int l = k+1; l < s1.length(); l++ )
+			{
+				int iCharForL = MapResiduesToIndex.getIndex(s1.charAt(l));
+				int jCharForL = MapResiduesToIndex.getIndex(s2.charAt(l));
+				
+				listI.add( (double) sMatrix[iCharForK][iCharForL]);
+				listJ.add( (double) sMatrix[jCharForK][jCharForL]);
+			}
+		}
+		
+		return Pearson.getPearsonR(listI, listJ);
 	}
 }

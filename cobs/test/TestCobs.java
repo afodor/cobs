@@ -81,7 +81,7 @@ public class TestCobs extends TestCase
 	}
 	
 	
-	private String getRandomProtein(int length) throws Exception
+	static String getRandomProtein(int length) throws Exception
 	{
 		StringBuffer buff = new StringBuffer();
 		
