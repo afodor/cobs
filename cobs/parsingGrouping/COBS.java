@@ -9,7 +9,6 @@ import averagesAndOutput.GroupOfColumnsInterface;
 import utils.MapResiduesToIndex;
 import utils.Pearson;
 
-
 import covariance.algorithms.McBASCCovariance;
 import covariance.datacontainers.Alignment;
 import covariance.parsers.FastaSequence;
@@ -30,7 +29,6 @@ public class COBS implements GroupOfColumnsInterface
 			ex.printStackTrace();
 			System.exit(1);
 		}
-
 	}
 
 
