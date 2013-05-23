@@ -15,11 +15,6 @@ import junit.framework.TestCase;
 public class TestMcBasc extends TestCase
 {
 
-	public TestMcBasc(String arg0)
-	{
-		super(arg0);
-	}
-
 	public void test1() throws Exception
 	{
 		List<AlignmentLine> list = new ArrayList<AlignmentLine>();
@@ -94,7 +89,7 @@ public class TestMcBasc extends TestCase
 		int[][] metric = McBASCCovariance.getMaxhomMetric();
 		List<AlignmentLine> list = new ArrayList<>();
 		
-		for( int x=0; x < 500; x++)
+		for( int x=0; x < 200; x++)
 			list.add(new AlignmentLine("" +  x, TestCobs.getRandomProtein(2)));
 		
 		Alignment a= new Alignment("Test", list);
@@ -136,6 +131,6 @@ public class TestMcBasc extends TestCase
 			}
 		}
 		
-		return Pearson.getPearsonR(listI, listJ);
+		return Math.abs(Pearson.getPearsonR(listI, listJ));
 	}
 }
