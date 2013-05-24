@@ -63,7 +63,7 @@ public class WriteScores
 		for(String s : pfamToPdbmap.keySet())
 			System.out.println(s);
 			
-		PfamParser parser = new PfamParser(true);
+		PfamParser parser = new PfamParser();
 
 		for(Alignment a=  parser.getNextAlignment();
 					a != null;

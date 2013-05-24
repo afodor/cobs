@@ -45,18 +45,12 @@ public class PfamParser
 	{
 		//System.out.println("Got initial line of " + lastLineRead );
 		
-		int slashIndex = lastLineRead.indexOf("/");
+		StringTokenizer sToken = new StringTokenizer(lastLineRead);
 		
-		if ( lastLineRead.indexOf("/") == -1 ) 
-			throw new Exception("Error!  Expecting a forward slash at line" + numLinesRead );
+		AlignmentLine aLine = new AlignmentLine( sToken.nextToken(), sToken.nextToken() );
 		
-		String id = lastLineRead.substring(0, slashIndex );
-		
-		String firstLine = lastLineRead.substring( slashIndex + 1 );
-		firstLine =  firstLine.substring( firstLine.indexOf("-"));
-		StringTokenizer sToken = new StringTokenizer( firstLine );
-		
-		AlignmentLine aLine = new AlignmentLine( id, sToken.nextToken() );
+		if( sToken.hasMoreTokens())
+			throw new Exception("Parsing error ");
 		
 		return aLine;	
 	}
