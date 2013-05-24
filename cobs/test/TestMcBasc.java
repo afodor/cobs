@@ -89,7 +89,7 @@ public class TestMcBasc extends TestCase
 		int[][] metric = McBASCCovariance.getMaxhomMetric();
 		List<AlignmentLine> list = new ArrayList<>();
 		
-		for( int x=0; x < 50; x++)
+		for( int x=0; x < 100; x++)
 			list.add(new AlignmentLine("" +  x, TestCobs.getRandomProtein(2)));
 		
 		Alignment a= new Alignment("Test", list);

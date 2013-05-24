@@ -22,7 +22,6 @@ public class AlignmentLine
 	public AlignmentLine( String identifier, String sequence )
 	{
 		this.identifier = identifier;
-		sequence = sequence.toUpperCase();
 		this.sequence = sequence;
 		
 		int vChars = 0;
