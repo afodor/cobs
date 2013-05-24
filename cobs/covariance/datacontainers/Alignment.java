@@ -164,6 +164,12 @@ public class Alignment
 		return sum / n;
 	}
 	
+	public void dumpAlignmentToConsole()
+	{
+		for( AlignmentLine aLine : alignmentLines)
+			System.out.println(aLine.getSequence());
+	}
+	
 	
 	public String getColumnAsString( int colPos ) throws Exception
 	{

@@ -23,10 +23,6 @@ public class AlignmentLine
 	{
 		this.identifier = identifier;
 		sequence = sequence.toUpperCase();
-		sequence = sequence.replaceAll("X", "A");
-		sequence = sequence.replaceAll("N", "L");
-		sequence = sequence.replaceAll("B", "D");
-		sequence = sequence.replaceAll("Z", "E");
 		this.sequence = sequence;
 		
 		int vChars = 0;
