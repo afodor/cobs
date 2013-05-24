@@ -30,23 +30,17 @@ public class PfamParser
 	}
 	
 	public PfamParser() throws Exception
-	{
-		this(false);
+	{	
+		this(ConfigReader.getFullPfamPath().toLowerCase().endsWith("gz"));
 	}
+	
 	
 	public PfamParser(boolean zipped) throws Exception
 	{
-		Charset charset = Charset.forName("US-ASCII");
-		File pfamF = new File(ConfigReader.getFullPfamPath());
-		pFamReader = new BufferedReader(new FileReader(pfamF), 100000);//   , charset);	
+		pFamReader = zipped ? new BufferedReader(new InputStreamReader( 
+				new GZIPInputStream( new FileInputStream( ConfigReader.getFullPfamPath()) ) ),100000)
+		: new BufferedReader( new FileReader( new File( ConfigReader.getFullPfamPath())),100000);	
 	}
-	
-//	public PfamParser(boolean zipped) throws Exception
-//	{
-//		pFamReader = zipped ? new BufferedReader(new InputStreamReader( 
-//				new GZIPInputStream( new FileInputStream( ConfigReader.getFullPfamPath()) ) ))
-//			: new BufferedReader( new FileReader( new File( ConfigReader.getFullPfamPath())));	
-//	}
 	
 	private AlignmentLine getAlignmentLine() throws Exception
 	{
