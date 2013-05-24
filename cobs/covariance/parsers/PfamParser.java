@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -54,10 +53,8 @@ public class PfamParser
 		String id = lastLineRead.substring(0, slashIndex );
 		
 		String firstLine = lastLineRead.substring( slashIndex + 1 );
-		int lowerBound = Integer.parseInt( firstLine.substring(0, firstLine.indexOf("-") ));
 		firstLine =  firstLine.substring( firstLine.indexOf("-"));
 		StringTokenizer sToken = new StringTokenizer( firstLine );
-		int upperBound = Integer.parseInt( sToken.nextToken() );
 		
 		AlignmentLine aLine = new AlignmentLine( id, sToken.nextToken() );
 		

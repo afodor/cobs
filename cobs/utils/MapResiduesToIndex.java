@@ -108,14 +108,14 @@ public class MapResiduesToIndex
 	public static int getIndexOrNegativeOne(char c) throws Exception
 	{
 		Character query = c;
-		query = query.toUpperCase(query);
+		query = Character.toUpperCase(query);
 		Integer answer = null;
 		answer = residueHashMap.get(query);
 		if (query=='-' || query=='.'){
 			return -1;
 		}
 		if (answer == null ){
-			System.out.print("We did not find the amino acid code in question: " + query + " \n");
+			//System.out.print("We did not find the amino acid code in question: " + query + " \n");
 		}
 		else{
 			return answer;
