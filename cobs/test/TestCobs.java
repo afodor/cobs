@@ -15,7 +15,7 @@ import covariance.datacontainers.AlignmentLine;
 import junit.framework.TestCase;
 
 public class TestCobs extends TestCase
-{
+{ 
 	private static Random RANDOM = new Random();
 		//new Random(3432421);  // seed is there for consistent results
 	
