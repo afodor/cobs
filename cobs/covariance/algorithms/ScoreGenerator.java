@@ -10,7 +10,7 @@ public interface ScoreGenerator
 	
 	//Because of the way that Pearson's is calculated for COBS (using a "TINY" double value)
 	//McBasc will now need to score a 0 so that we are making the same assumptions in the code base.
-	public static final double COBS_CONSISTENT = 0.0;
+	public static final double COBS_CONSISTENT = 1.0;
 	
 	public double getScore( Alignment a, int i, int j ) throws Exception;
 	

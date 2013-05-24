@@ -288,7 +288,7 @@ public class McBASCCovariance implements ScoreGenerator
 		// For small alignments with few sequences, however, this approximation may effect the score
 		// Looking at this now, it seems kind of sloppy, but because we only used large aligments in the paper
 		// ( >50 sequences), it made almost no difference to our results
-		return 2 * Math.abs( sum / ( this.numSquared * sds[i] * sds[j]));
+		return 2 *  sum / ( this.numSquared * sds[i] * sds[j]);
 	}
 
 	public boolean isSymmetrical()
