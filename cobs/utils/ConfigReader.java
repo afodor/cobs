@@ -13,8 +13,6 @@ public class ConfigReader
 	public static final String FULL_PFAM_PATH="FULL_PFAM_PATH";
 	public static final String LOCAL_PDB_DIRECTORY="LOCAL_PDB_DIRECTORY";
 	public static final String OUT_DATA_DIR="OUT_DATA_DIR";
-	public static final String PY_MOL_OUT_DIR="PY_MOL_OUT_DIR";
-	public static final String NATIVE_LOCKLESS_DIR="NATIVE_LOCKLESS_DIR";
 	public static final String GZIP_FULL_PATH="GZIP_FULL_PATH";
 	public static final String COBS_CLEANROOM = "COBS_CLEANROOM";
 	public static final String PDB_DIR = "PDB_DIR";
@@ -129,20 +127,6 @@ public class ConfigReader
 		return getConfigReader().getAProperty(BLAST_DIR);
 	}
 	
-	public static String getPymolOutDir() throws Exception
-	{
-		return getConfigReader().getAProperty( PY_MOL_OUT_DIR);
-	}
-	
-	public static String getNativeLocklessDir() throws Exception
-	{
-		return getConfigReader().getAProperty( NATIVE_LOCKLESS_DIR);
-	}
-		
-	public static String getGZipPath() throws Exception
-	{
-		return getConfigReader().getAProperty(GZIP_FULL_PATH);
-	}
 	
 	public static String getCleanroom() throws Exception
 	{

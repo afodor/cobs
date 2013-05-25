@@ -1,0 +1,124 @@
+package averagesAndOutput;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.concurrent.Semaphore;
+
+import utils.ConfigReader;
+import covariance.algorithms.ConservationSum;
+import covariance.algorithms.MICovariance;
+import covariance.algorithms.McBASCCovariance;
+import covariance.algorithms.RandomScore;
+import covariance.algorithms.ScoreGenerator;
+import covariance.datacontainers.Alignment;
+import covariance.parsers.PfamParser;
+
+public class WriteOneDScores
+{
+	public static void main(String[] args) throws Exception
+	{
+		HashMap<String, PfamToPDBAnnotations> pfamToPdbmap = PfamToPDBAnnotations.getAnnotationsAsMap();
+		Semaphore semaphore = new Semaphore(WriteScores.NUM_THREADS);
+		
+		PfamParser parser = new PfamParser();
+
+		for(Alignment a=  parser.getNextAlignment();
+					a != null;
+						a = parser.getNextAlignment())
+		{
+			PfamToPDBAnnotations toPdb = pfamToPdbmap.get(a.getAligmentID());
+			
+			if( toPdb != null &&  (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= WriteScores.MIN_PDB_LENGTH 
+					&& toPdb.getPercentIdentity() >= WriteScores.MIN_PERCENT_IDENTITY  )
+			{
+				kickOneOffIfFileDoesNotExist(semaphore, a, new ConservationSum(a));
+				kickOneOffIfFileDoesNotExist(semaphore, a, new MICovariance(a));
+				kickOneOffIfFileDoesNotExist(semaphore, a, new RandomScore());
+				kickOneOffIfFileDoesNotExist(semaphore, a, new McBASCCovariance(a));
+			}
+		}
+	}
+	
+	/*
+	 * The syncrhonized is just to force all threads to the most up-to-date view of the data
+	 */
+	private static synchronized void kickOneOffIfFileDoesNotExist(Semaphore semaphore, Alignment a, 
+			ScoreGenerator sg) throws Exception
+	{
+		File outFile = getOutputFile(a, sg);
+		
+		if(! outFile.exists())
+		{
+			semaphore.acquire();
+			Worker w = new Worker(a,sg, semaphore);
+				new Thread(w).start();
+		}
+		else
+		{
+			Date date = new Date();
+			String stringDate = date.toString();
+			System.out.println(outFile.getAbsolutePath() + "exists. skipping at " + stringDate);
+		}
+	}
+	
+	private static File getOutputFile(Alignment a, ScoreGenerator sg) throws Exception
+	{
+		return new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
+				"oneD" + File.separator + 
+				a.getAligmentID() + "_" + sg.getAnalysisName() + ".txt");
+	}
+	
+	private static class Worker implements Runnable
+	{
+		private final Alignment a;
+		private final Semaphore semaphore;
+		private final ScoreGenerator sg;
+		
+		private Worker(Alignment a, ScoreGenerator sg, Semaphore semaphore)
+		{
+			this.a = a;
+			this.semaphore = semaphore;
+			this.sg = sg;
+		}
+
+		public void run()
+		{
+			//So that we ALWAYS have something to close
+			BufferedWriter writer = null;
+			
+			try
+			{		
+				File outputFile = getOutputFile(a, sg);
+				
+				if(outputFile.exists())
+					throw new Exception(outputFile.getAbsolutePath() + " already exists ");
+				
+				writer = new BufferedWriter(new FileWriter(outputFile));
+				
+				writer.write("i\tj\tscore\n");
+				
+				System.out.println(a.getAligmentID());
+				
+				for( int x=0; x < a.getNumColumnsInAlignment() -1; x++)
+					for( int y=x+1; y < a.getNumColumnsInAlignment(); y++)
+					{
+							
+					}
+				
+				writer.flush();  
+				writer.close();
+				System.out.println("Finished " + a.getAligmentID() + "_" + sg.getAnalysisName());
+				semaphore.release();
+				
+			}
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
+				System.exit(1);
+			}
+		}
+	}
+}
