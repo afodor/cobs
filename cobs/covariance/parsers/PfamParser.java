@@ -47,7 +47,9 @@ public class PfamParser
 		
 		StringTokenizer sToken = new StringTokenizer(lastLineRead);
 		
-		AlignmentLine aLine = new AlignmentLine( sToken.nextToken(), sToken.nextToken() );
+		AlignmentLine aLine = new AlignmentLine(
+			new StringTokenizer(sToken.nextToken(), "/").nextToken(), 
+				sToken.nextToken() );
 		
 		if( sToken.hasMoreTokens())
 			throw new Exception("Parsing error ");
