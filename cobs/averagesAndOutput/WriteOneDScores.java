@@ -105,7 +105,7 @@ public class WriteOneDScores
 				for( int x=0; x < a.getNumColumnsInAlignment() -1; x++)
 					for( int y=x+1; y < a.getNumColumnsInAlignment(); y++)
 					{
-							
+						writer.write(x + "\t" + y + "\t" + sg.getScore(a, x, y) + "\n");
 					}
 				
 				writer.flush();  
