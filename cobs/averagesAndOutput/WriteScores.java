@@ -3,7 +3,6 @@ package averagesAndOutput;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -102,6 +101,7 @@ public class WriteScores
 			PfamToPDBAnnotations toPdb = pfamToPdbmap.get(a.getAligmentID());
 			PfamToPDB otherPdb = otherPfamMap.get(a.getAligmentID());
 			
+			System.out.println("Trying " + a.getAligmentID());
 			
 			if( toPdb != null && (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= MIN_PDB_LENGTH 
 						&& toPdb.getPercentIdentity() >= MIN_PERCENT_IDENTITY  )

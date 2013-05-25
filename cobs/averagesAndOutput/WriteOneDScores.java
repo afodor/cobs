@@ -35,9 +35,11 @@ public class WriteOneDScores
 			if( toPdb != null &&  (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= WriteScores.MIN_PDB_LENGTH 
 					&& toPdb.getPercentIdentity() >= WriteScores.MIN_PERCENT_IDENTITY  )
 			{
-				kickOneOffIfFileDoesNotExist(semaphore, a, new ConservationSum(a));
-				kickOneOffIfFileDoesNotExist(semaphore, a, new MICovariance(a));
-				kickOneOffIfFileDoesNotExist(semaphore, a, new RandomScore());
+				// McBASC is all we really need to cache; the other algorithsm are fast
+				//kickOneOffIfFileDoesNotExist(semaphore, a, new ConservationSum(a));
+				//kickOneOffIfFileDoesNotExist(semaphore, a, new MICovariance(a));
+				//kickOneOffIfFileDoesNotExist(semaphore, a, new RandomScore());
+				
 				kickOneOffIfFileDoesNotExist(semaphore, a, new McBASCCovariance(a));
 			}
 		}

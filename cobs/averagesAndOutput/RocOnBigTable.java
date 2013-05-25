@@ -20,26 +20,25 @@ public class RocOnBigTable
 	public static void main(String[] args) throws Exception
 	{
 		for(String s: AbsoluteScoreVsAverageDistance.FILE_NAMES)
-			for(String s2 : AbsoluteScoreVsAverageDistance.TYPES)
 			{
-				writeROC(s,true,s2);
-				writeROC(s, false,s2);
+				writeROC(s,true);
+				writeROC(s, false);
 			}
 		System.out.println("All files completed.");
 	}
 	
-	public static void writeROC(String fileSubString, boolean normalized, String type) throws Exception
+	public static void writeROC(String fileSubString, boolean normalized) throws Exception
 	{
 		
 		BufferedReader reader = new BufferedReader(new FileReader(new File(
 				ConfigReader.getCleanroom() + File.separator + 
 						"bigSummaries" + File.separator + "big" + fileSubString + (normalized ? "normed" : "") + 
-						(type == null ? "ALL" : type) + ".txt")));
+						".txt")));
 		
 		BufferedWriter writer = new BufferedWriter(new FileWriter(
 				ConfigReader.getCleanroom() + File.separator + 
 				"roc" + File.separator + "bigROC" + fileSubString +(normalized ? "normed" : "")+ "_" + 
-						(type==null ? "ALL" : type) + ".txt"));
+						 ".txt"));
 		
 		int numBelow50=0;
 		int numAbove50=0;

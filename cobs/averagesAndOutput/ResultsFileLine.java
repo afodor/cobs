@@ -302,7 +302,7 @@ public final class ResultsFileLine
 		return false;
 	}
 	
-	public static List<ResultsFileLine> parseResultsFile(File file, String type) throws Exception
+	public static List<ResultsFileLine> parseResultsFile(File file) throws Exception
 	{
 		List<ResultsFileLine> list = new ArrayList<ResultsFileLine>();
 		
@@ -317,18 +317,16 @@ public final class ResultsFileLine
 		{
 			ResultsFileLine rfl = new ResultsFileLine(s, file.getName());
 			
-			if( type == null || type.equals(rfl.combinedType))
-			{
-				String key = rfl.getRegionKey();
+			String key = rfl.getRegionKey();
 				
-				if( ! rfl.twoRegionsAreEqual() && ! done.contains(key) && isOkForRegionSet(regionSet,rfl))
-				{
-						done.add(key);
-						list.add(rfl);			
-				}
+			if( ! rfl.twoRegionsAreEqual() && ! done.contains(key) && isOkForRegionSet(regionSet,rfl))
+			{
+					done.add(key);
+					list.add(rfl);			
 			}
 		}
 		
+		reader.close();
 		return list;
 	}
 }

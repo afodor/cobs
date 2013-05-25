@@ -19,39 +19,35 @@ public class AbsoluteScoreVsAverageDistance
 		double listSize;
 	}
 	
-	public static final String[]  FILE_NAMES = {"random_PNormal",
-		"AverageConservationSum_PNormal",
+	public static final String[]  FILE_NAMES = {"random_PNormalInitial",
+		"AverageConservationSum_PNormalInitial",
 		"AverageConservationSum",
 		"AverageMcBASC",  
-		"AverageMI_PNormal",
+		"AverageMI_PNormalInitial",
 		"AverageMI", 
 		"COBS_UNCORRECTED"
 		};
 		
-	public static final String[] TYPES = {null};
-	
 	public static void main(String[] args) throws Exception
 	{
 		for(String s : FILE_NAMES)
-			for( String s2 : TYPES)
-			{
-				writeASummaryFile(s,true,s2);
-				writeASummaryFile(s,false,s2);
-			}
+		{
+			writeASummaryFile(s,true);
+			writeASummaryFile(s,false);
+		}
 			
 	}
 	
-	public static void writeASummaryFile(String fileSubString, boolean normalized, String type) throws Exception
+	public static void writeASummaryFile(String fileSubString, boolean normalized) throws Exception
 	{
 		HashMap<String, ListData> mapOfFiles = new HashMap<String, AbsoluteScoreVsAverageDistance.ListData>();
 		
-		List<ResultsFileLine> bigList = getCombinedList(mapOfFiles, fileSubString,normalized, type);
+		List<ResultsFileLine> bigList = getCombinedList(mapOfFiles, fileSubString,normalized);
 		
 		Collections.sort(bigList, new ResultsFileLine.SortByScore());
 		
 		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(ConfigReader.getCleanroom() + File.separator + 
-				"bigSummaries" + File.separator + "big" + fileSubString + (normalized ? "normed" : "") + 
-				(type == null ? "ALL" : type) + ".txt")
+				"bigSummaries" + File.separator + "big" + fileSubString + (normalized ? "normedLate" : "") +".txt")
 		  ));
 		
 		writer.write("family\tscore\tregion1\tregion2\tpercentile\tavgDistance\ttype\tlistSize\tmedianDistance\n");
@@ -80,7 +76,7 @@ public class AbsoluteScoreVsAverageDistance
 	}
 	
 	public static List<ResultsFileLine> getCombinedList(HashMap<String, ListData> mapOfFiles, String fileSubString,
-			boolean normalized, String type) throws Exception
+			boolean normalized) throws Exception
 	{
 		List<ResultsFileLine> bigList = new ArrayList<ResultsFileLine>();
 		
@@ -88,7 +84,7 @@ public class AbsoluteScoreVsAverageDistance
 		String[] files = dataDir.list();
 
 		for(String s : files)
-		{	//I believe there was a bug here allowing for SOME scores to be double counted.
+		{	
 			if(s.contains(fileSubString + "."))
 			{
 				//Debug only
@@ -97,29 +93,18 @@ public class AbsoluteScoreVsAverageDistance
 				File fileToRead = new File(dataDir.getAbsolutePath() +
 						File.separator + s);
 				
-				List<ResultsFileLine> innerList;
-				try {
-					innerList = ResultsFileLine.parseResultsFile(fileToRead, type);
-				} catch (Exception e) {
-					System.out.println("We crashed trying the file: " + fileToRead.getName());
-				}
-				
-				innerList = ResultsFileLine.parseResultsFile(fileToRead, type);
+				List<ResultsFileLine> innerList= ResultsFileLine.parseResultsFile(fileToRead);
 				
 				if(normalized)
 					innerList= ResultsFileLine.getNormalizedList(innerList);
 				
-				//Debug Only
-				//System.out.println(innerList.size());
 				if( innerList.size() > 3)
 				{
 					ListData ld = new ListData();
 					ld.listSize = innerList.size();
 					ld.medianDistance = ResultsFileLine.getMedianAverageDistance(innerList);
 					
-					//This just seems to be a parse of what we already knew
-					//System.err.println("Median distance was computed as: " + ld.medianDistance);
-
+				
 					// list is sorted by call to getMedianAverageDistance(...)
 					for(int x=0;x  < innerList.size(); x++)
 					{
@@ -135,8 +120,7 @@ public class AbsoluteScoreVsAverageDistance
 					mapOfFiles.put(s, ld);
 					System.out.println(s + " " + innerList.get(0).getParentFileName());
 					bigList.addAll(innerList);
-				}
-				
+				}	
 			}
 		}
 		
