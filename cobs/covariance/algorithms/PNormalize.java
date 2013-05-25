@@ -71,7 +71,7 @@ public class PNormalize implements ScoreGenerator
 	@Override
 	public String getAnalysisName()
 	{
-		return wrappedMetric.getAnalysisName() + "_PNormal";
+		return wrappedMetric.getAnalysisName() + "_PNormalInitial";
 	}
 
 	@Override

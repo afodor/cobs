@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Random;
 
 import averagesAndOutput.AverageMcBASC;
+import averagesAndOutput.AverageScoreGenerator;
 
 import junit.framework.TestCase;
 
@@ -26,6 +27,8 @@ public class TestMcBascAverage extends TestCase
 		
 		AverageMcBASC aMcBasc = new AverageMcBASC(a);
 		
+		AverageScoreGenerator asg = new AverageScoreGenerator(mcBasc);
+		
 		for( int x=0; x< 100; x++)
 		{
 			int startLeft = a.getNumColumnsInAlignment() / 4;
@@ -40,7 +43,8 @@ public class TestMcBascAverage extends TestCase
 			double reimpScore = getReimplementedAverage(mcBasc, a, startLeft, endLeft, startRight, endRight);
 			
 			System.out.println(score + " " + reimpScore);
-			assertEquals(score, reimpScore);
+			assertEquals(score, reimpScore,0.0001);
+			assertEquals(score, asg.getScore(a, startLeft, endLeft, startRight, endRight),0.0001);
 		}
 	}
 	

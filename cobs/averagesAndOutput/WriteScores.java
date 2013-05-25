@@ -21,6 +21,7 @@ import utils.ConfigReader;
 
 import covariance.algorithms.ConservationSum;
 import covariance.algorithms.MICovariance;
+import covariance.algorithms.McBASCCovariance;
 import covariance.algorithms.PNormalize;
 import covariance.algorithms.RandomScore;
 import covariance.datacontainers.Alignment;
@@ -76,16 +77,22 @@ public class WriteScores
 						&& toPdb.getPercentIdentity() >= MIN_PERCENT_IDENTITY  )
 			{
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new COBS());
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new AverageMcBASC(a));
-				//kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new MaxMcBASC(a));
+				
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-					new AverageScoreGenerator(new PNormalize(new RandomScore(a.getAligmentID() +"_random",a))));
+						new AverageScoreGenerator(new McBASCCovariance(a)) );
+				
+				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+						new AverageScoreGenerator( new PNormalize(new McBASCCovariance(a))));
+				
+				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+					new AverageScoreGenerator(new RandomScore(a.getAligmentID() +"_random",a)));
 				
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
 						new AverageScoreGenerator(new PNormalize(new MICovariance(a))));
 				
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
 						new AverageScoreGenerator(new MICovariance(a)));											
+				
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
 						new AverageScoreGenerator(new ConservationSum(a)));
 				
