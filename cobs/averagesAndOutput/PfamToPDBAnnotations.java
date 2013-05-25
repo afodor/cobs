@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import utils.ConfigReader;
@@ -98,7 +99,7 @@ public class PfamToPDBAnnotations
 	 */
 	public static HashMap<String, PfamToPDBAnnotations> getAnnotationsAsMap() throws Exception
 	{
-		HashMap<String, PfamToPDBAnnotations> map = new HashMap<String, PfamToPDBAnnotations>();
+		HashMap<String, PfamToPDBAnnotations> map = new LinkedHashMap<String, PfamToPDBAnnotations>();
 		
 		List<PfamToPDBAnnotations> list = getAnnotations();
 		

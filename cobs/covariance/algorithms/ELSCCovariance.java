@@ -40,7 +40,7 @@ public class ELSCCovariance implements ScoreGenerator
 	/**  This will work a lot faster if you call all the j's for the same i since the last
 	 *   called subalignment i is cached
 	 */
-	public double getScore(Alignment a, int i, int j) throws Exception
+	public Double getScore(Alignment a, int i, int j) throws Exception
 	{
 		if ( this.a != a ) 
 			throw new Exception("Unexpected alignment");

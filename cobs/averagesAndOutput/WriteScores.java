@@ -20,13 +20,12 @@ import utils.ConfigReader;
 
 
 import covariance.algorithms.ConservationSum;
+import covariance.algorithms.FileScoreGenerator;
 import covariance.algorithms.MICovariance;
-import covariance.algorithms.McBASCCovariance;
 import covariance.algorithms.PNormalize;
 import covariance.algorithms.RandomScore;
 import covariance.datacontainers.Alignment;
 import covariance.datacontainers.AlignmentLine;
-import covariance.datacontainers.PdbChain;
 import covariance.datacontainers.PdbFileWrapper;
 import covariance.datacontainers.PdbResidue;
 import covariance.parsers.PfamParser;
@@ -55,15 +54,45 @@ public class WriteScores
 		
 	}
 	
+	private static File getMcBascFileName(Alignment a) throws Exception
+	{
+		return new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
+				"oneD" + File.separator + 
+				a.getAligmentID() + "_" + "McBASC"+ ".txt");
+	}
+	
+	private static FileScoreGenerator getMcBascFSGorNull(Alignment a) throws Exception
+	{
+		File file = getMcBascFileName(a);
+		
+		if (! file.exists())
+		{
+			System.out.println("Could not find " + file.getAbsolutePath());
+			return null;
+			
+		}
+			
+		FileScoreGenerator fsg = new FileScoreGenerator("McBASC", file, a);
+		
+		if( a.getNumColumnsInAlignment() * (a.getNumColumnsInAlignment()-1) / 2 != fsg.getNumScores() )
+		{
+			System.out.println("Truncated " + file.getAbsolutePath());			
+			return null;
+			
+		}
+			
+		return fsg;
+	}
+	
 	public static void main(String[] args) throws Exception
 	{
 		HashMap<String, PfamToPDBAnnotations> pfamToPdbmap = PfamToPDBAnnotations.getAnnotationsAsMap();
+		
+		System.out.println(pfamToPdbmap.keySet());
+		
 		HashMap<String, PfamToPDB> otherPfamMap = PfamToPDB.getMapByName();
 		Semaphore semaphore = new Semaphore(NUM_THREADS);
 		
-		for(String s : pfamToPdbmap.keySet())
-			System.out.println(s);
-			
 		PfamParser parser = new PfamParser();
 
 		for(Alignment a=  parser.getNextAlignment();
@@ -72,38 +101,44 @@ public class WriteScores
 		{
 			PfamToPDBAnnotations toPdb = pfamToPdbmap.get(a.getAligmentID());
 			PfamToPDB otherPdb = otherPfamMap.get(a.getAligmentID());
-		
+			
+			
 			if( toPdb != null && (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= MIN_PDB_LENGTH 
 						&& toPdb.getPercentIdentity() >= MIN_PERCENT_IDENTITY  )
 			{
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new COBS());
+				FileScoreGenerator mcbascFSG = getMcBascFSGorNull(a);
 				
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-					new AverageScoreGenerator(new RandomScore(a.getAligmentID() +"_random",a)));
-				
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator(new PNormalize(new MICovariance(a))));
-				
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator(new MICovariance(a)));											
-				
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator(new ConservationSum(a)));
-				
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator(new PNormalize(new ConservationSum(a))));
-				
-			
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator(new McBASCCovariance(a)));
-				
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator( new PNormalize(new McBASCCovariance(a))));
-				
-			}
-			else
-			{	//Quite verbose -- debug only
-				//System.err.println("There was an issue with the PDB qualifying for parsing.  This was either because no pdb was unable to be parsed, the percent identity was too low, or the length minimum not met.");
+				if( mcbascFSG != null)
+				{
+					System.out.println("Starting " + a.getAligmentID());
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+							new AverageScoreGenerator(mcbascFSG));
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new COBS());
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+						new AverageScoreGenerator(new RandomScore(a.getAligmentID() +"_random",a)));
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+							new AverageScoreGenerator(new PNormalize(new MICovariance(a))));
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+							new AverageScoreGenerator(new MICovariance(a)));											
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+							new AverageScoreGenerator(new ConservationSum(a)));
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+							new AverageScoreGenerator(new PNormalize(new ConservationSum(a))));
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+							new AverageScoreGenerator( new PNormalize(mcbascFSG)));
+				}
+				else
+				{	
+					System.out.println("Skipping " + a.getAligmentID());
+				}
 			}
 		}
 		
@@ -167,21 +202,16 @@ public class WriteScores
 		
 		public void run()
 		{
-			//So that we ALWAYS have something to close
-			BufferedWriter writer = null;
-			Boolean closedAsExpected = false;
 			try
 			{
 				PdbFileWrapper fileWrapper = new PdbFileWrapper( new File( ConfigReader.getPdbDir() + File.separator + toPDB.getPdbID() + ".txt"));
 				
 				File outputFile = getOutputFile(a, gci);
 				
-				semaphore.release();
-				
 				if(outputFile.exists())
 					throw new Exception(outputFile.getAbsolutePath() + " already exists ");
 				
-				writer = new BufferedWriter(new FileWriter(outputFile));
+				BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
 				
 				writer.write("region1\tregion2\tcombinedType\tscore\taverageDistance\tminDistance\n");
 				writer.flush();
@@ -192,8 +222,6 @@ public class WriteScores
 						HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPDB.getPdbID() + ".txt",
 								otherToPdb.getChainID(), toPDB.getQueryStart(), toPDB.getQueryEnd());
 				System.out.println(helixSheetGroup);
-				
-				
 				
 				for(int x=0; x< helixSheetGroup.size() -1; x++)
 				{
@@ -238,39 +266,14 @@ public class WriteScores
 				Date date = new Date();
 				String stringDate = date.toString();
 				System.out.println("Finished " + a.getAligmentID() + "_" + gci.getName() + " at " + stringDate);
-				
-			}
-			catch(java.io.IOException ex)
-			{
-				System.out.println("End of computation reached, closing " + a.getAligmentID());
-				closedAsExpected=true;
-				ex.printStackTrace();
-				System.exit(1);
+				semaphore.release();
 			}
 			catch(Exception ex)
 			{
-				System.out.println("Unknown error for " + a.getAligmentID());
 				ex.printStackTrace();
 				System.exit(1);
 			}
-			finally
-			{
-				try {
-					if (closedAsExpected == false){
-						writer.flush();
-						writer.close();
-					}
-
-				} catch (IOException e) {
-					//This became too verbose, this is basically happening when we have already
-					//closed a file correctly, but our "second try" didn't work because the first one did
-					//Originally written to track down a memory leak, which we are no longer seeing  --- Debug only
-					//System.out.println("INFO:  We are closing this alignment file from a catch block " + a.getAligmentID());
-				}
-				semaphore.release();
-			}
 		}
-		
 	}
 	
 	private static double getAverageDistance( PdbFileWrapper wrapper, HelixSheetGroup xGroup, HelixSheetGroup yGroup, char chain )
@@ -347,6 +350,7 @@ public class WriteScores
 			return val;
 		}
 	
+	
 	public static HashMap<Integer, Integer> getPdbToAlignmentNumberMap( Alignment a, PfamToPDBAnnotations toPDB,
 			 PfamToPDB otherToPdb, PdbFileWrapper fileWrapper) throws Exception
 	{
@@ -359,21 +363,8 @@ public class WriteScores
 		if(alignmentSeq.indexOf("-") != -1)
 			throw new Exception("No " + alignmentSeq);
 		
-		String pdbSeq;
-		PdbChain c = null;
-		int start = 1111111111;
-		int end = 222222222;
-		try {
-			c = fileWrapper.getChain(otherToPdb.getChainID());
-			start = toPDB.getQueryStart()-1;
-			end = toPDB.getQueryEnd();
-			pdbSeq = fileWrapper.getChain(otherToPdb.getChainID()).getSequence().substring(toPDB.getQueryStart()-1,toPDB.getQueryEnd());
-		} catch (StringIndexOutOfBoundsException e) {
-			throw new Exception("Chain was " + c + "\n" + "Start and end of query PDB were: " + start + " "  + end  + "\n" +  alignmentSeq);
-		}
-		
-		pdbSeq = fileWrapper.getChain(otherToPdb.getChainID()).getSequence().substring(toPDB.getQueryStart()-1,
-				toPDB.getQueryEnd());
+		String pdbSeq = fileWrapper.getChain(otherToPdb.getChainID()).getSequence().substring(toPDB.getQueryStart()-1,
+																		toPDB.getQueryEnd());
 		
 		PairedAlignment pa = 
 				NeedlemanWunsch.globalAlignTwoSequences(

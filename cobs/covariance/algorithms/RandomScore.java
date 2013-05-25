@@ -45,7 +45,7 @@ public class RandomScore implements ScoreGenerator
 		writer.flush();  writer.close();			
 	}
 	
-	public double getScore( Alignment a, int i, int j ) throws Exception
+	public Double getScore( Alignment a, int i, int j ) throws Exception
 	{
 		return random.nextDouble();
 	}

@@ -12,7 +12,7 @@ public interface ScoreGenerator
 	//McBasc will now need to score a 0 so that we are making the same assumptions in the code base.
 	public static final double COBS_CONSISTENT = 1.0;
 	
-	public double getScore( Alignment a, int i, int j ) throws Exception;
+	public Double getScore( Alignment a, int i, int j ) throws Exception;
 	
 	public String getAnalysisName();
 	

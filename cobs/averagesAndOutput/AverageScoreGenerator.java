@@ -29,6 +29,12 @@ public class AverageScoreGenerator implements GroupOfColumnsInterface
 			int leftPosEnd, int rightPosStart, int rightPosEnd)
 			throws Exception
 	{
+		if( leftPosEnd == rightPosStart)
+			leftPosEnd--;
+		
+		//System.out.println("CHECKING " + alignment.getAligmentID() + " " + 
+		//leftPosStart + " " + leftPosEnd + " " + rightPosStart + " " + rightPosEnd);
+		
 		if( alignment != sg.getAlignment())
 			throw new Exception("NO");
 		
@@ -45,10 +51,14 @@ public class AverageScoreGenerator implements GroupOfColumnsInterface
 				
 				if( score == null)
 				{
+					if( x== y)
+						System.out.println("Querying " + x + " " + y);
+					
+					
 					score = sg.getScore(alignment, x, y);
-					cachedMap.put(key, score);
 				}
 				
+				cachedMap.put(key, score);
 				sum += score;
 				n++;
 			}

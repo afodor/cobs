@@ -128,7 +128,7 @@ public class JavaSCA implements ScoreGenerator
 	/**  This will work a lot faster if you call all the j's for the same i since the last
 	 *   called subalignment i is cached
 	 */
-	public double getScore( Alignment alignment, int i, int j ) throws Exception
+	public Double getScore( Alignment alignment, int i, int j ) throws Exception
 	{
 		if ( mostFrequentresidues[i] == '-' ) 
 			throw new Exception("Error!  No valid residues at position " + i );

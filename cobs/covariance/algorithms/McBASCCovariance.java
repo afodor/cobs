@@ -175,6 +175,9 @@ public class McBASCCovariance implements ScoreGenerator
 		}
 	}
 	
+	/*
+	 * Do not change (as this is hardcoded in other places for file name recognition)
+	 */
 	public String getAnalysisName()
 	{
 		return "McBASC";
@@ -238,7 +241,7 @@ public class McBASCCovariance implements ScoreGenerator
 	 as indicated in the comments in this method.
 	 
 	 */
-	public synchronized double getScore(Alignment a, int i, int j) throws Exception
+	public synchronized Double getScore(Alignment a, int i, int j) throws Exception
 	{
 		if ( a != this.a ) 
 			throw new Exception("Please call on alignment passed into constructor!");

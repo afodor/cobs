@@ -64,13 +64,28 @@ public class HelixSheetGroup
 
 	public static List<HelixSheetGroup> getList(String pdbFile, char pdbChain, int pdbStart, int pdbEnd) throws Exception
 	{
-		List<HelixSheetGroup> returnList = new ArrayList<HelixSheetGroup>();
+		List<HelixSheetGroup> aList = new ArrayList<HelixSheetGroup>();
 		
 		for( HelixSheetGroup hsg : getList(pdbFile))
 			if( hsg.startChain == pdbChain && hsg.endChain == pdbChain && hsg.startPos >= pdbStart && hsg.endPos <= pdbEnd)
+				aList.add(hsg);
+		
+		List<HelixSheetGroup> returnList = new ArrayList<HelixSheetGroup>();
+		
+		for(HelixSheetGroup hsg : aList)
+			if( ! alreadyThere(hsg, returnList))
 				returnList.add(hsg);
 		
 		return returnList;
+	}
+	
+	private static boolean alreadyThere(  HelixSheetGroup hsg, List<HelixSheetGroup> list )
+	{
+		for( HelixSheetGroup aHsg : list )
+			if( hsg.startPos ==  aHsg.startPos && hsg.endPos == aHsg.endPos)
+				return true;
+		
+		return false;
 	}
 	
 	public static List<HelixSheetGroup> getList(String pdbFile) throws Exception

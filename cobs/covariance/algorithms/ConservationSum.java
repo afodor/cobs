@@ -18,7 +18,7 @@ public class ConservationSum implements ScoreGenerator, ConservationGenerator
 		return alignment;
 	}
 	
-	public double getScore( Alignment a, int i, int j ) throws Exception
+	public Double getScore( Alignment a, int i, int j ) throws Exception
 	{
 		if ( a != this.alignment ) 
 			throw new Exception("Please call getScore() with the same alignment used in the constructor");

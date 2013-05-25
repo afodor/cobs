@@ -130,7 +130,7 @@ public class MICovariance implements ScoreGenerator
 		return covarianceScore;
 	}
 	
-	public double getScore(Alignment alignment, int i, int j) throws Exception
+	public Double getScore(Alignment alignment, int i, int j) throws Exception
 	{
 		if ( a != alignment ) 
 			throw new Exception("Please call on same alignment that was passed in to constructor");
@@ -168,7 +168,7 @@ public class MICovariance implements ScoreGenerator
 		
 		// perfectly conserved columns do not covary, so this is ok to do
 		if ( cScore == 0 ) 
-			return 0;
+			return 0.0;
 		
 		return score;	
 		//return score / cScore;

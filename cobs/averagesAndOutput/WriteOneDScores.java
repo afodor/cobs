@@ -9,6 +9,7 @@ import java.util.concurrent.Semaphore;
 
 import utils.ConfigReader;
 import covariance.algorithms.ConservationSum;
+import covariance.algorithms.FileScoreGenerator;
 import covariance.algorithms.MICovariance;
 import covariance.algorithms.McBASCCovariance;
 import covariance.algorithms.RandomScore;
@@ -49,6 +50,23 @@ public class WriteOneDScores
 			ScoreGenerator sg) throws Exception
 	{
 		File outFile = getOutputFile(a, sg);
+		
+		
+		if( outFile.exists())
+		{
+			FileScoreGenerator fsg = new FileScoreGenerator("foo", outFile, a);
+			
+			int expectedNum = a.getNumColumnsInAlignment() * (a.getNumColumnsInAlignment()-1) / 2;
+			
+			if( fsg.getNumScores() != expectedNum)
+			{
+				System.out.println(outFile.getAbsolutePath() +" truncated.  Deleting");
+				outFile.delete();
+				
+				if( outFile.exists())
+					throw new Exception("Could not delete " + outFile.getPath());
+			}
+		}
 		
 		if(! outFile.exists())
 		{

@@ -67,7 +67,7 @@ public class PNormalize implements ScoreGenerator
 	}
 	
 	@Override
-	public double getScore(Alignment a, int i, int j) throws Exception
+	public Double getScore(Alignment a, int i, int j) throws Exception
 	{
 		return wrappedMetric.getScore(a, i, j) - averages.get(i) * averages.get(j) / grandAverage;
 	}

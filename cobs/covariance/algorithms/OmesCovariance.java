@@ -225,7 +225,7 @@ public class OmesCovariance implements ScoreGenerator
 		return list;
 	}
 	
-	public double getScore( Alignment alignment, int i, int j ) throws Exception
+	public Double getScore( Alignment alignment, int i, int j ) throws Exception
 	{
 		if ( alignment != this.a )
 			throw new Exception("Please call on the same alignment used in the constructor");
