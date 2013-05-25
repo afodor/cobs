@@ -14,6 +14,10 @@ public class PNormalize implements ScoreGenerator
 	private final double grandAverage;
 	private final ScoreGenerator wrappedMetric;
 	
+	/*
+	 * Todo: Improve the concurrency.  This constructor takes a long time to complete, 
+	 * blokcing progress other threads from getting spawned.
+	 */
 	public PNormalize(ScoreGenerator wrappedMetric) throws Exception
 	{
 		if(! wrappedMetric.isSymmetrical())

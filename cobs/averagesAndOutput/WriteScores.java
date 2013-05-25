@@ -79,12 +79,6 @@ public class WriteScores
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new COBS());
 				
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator(new McBASCCovariance(a)) );
-				
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator( new PNormalize(new McBASCCovariance(a))));
-				
-				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
 					new AverageScoreGenerator(new RandomScore(a.getAligmentID() +"_random",a)));
 				
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
@@ -98,6 +92,14 @@ public class WriteScores
 				
 				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
 						new AverageScoreGenerator(new PNormalize(new ConservationSum(a))));
+				
+			
+				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+						new AverageScoreGenerator(new McBASCCovariance(a)));
+				
+				kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+						new AverageScoreGenerator( new PNormalize(new McBASCCovariance(a))));
+				
 			}
 			else
 			{	//Quite verbose -- debug only

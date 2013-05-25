@@ -5,6 +5,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import utils.ConfigReader;
@@ -15,6 +16,8 @@ import covariance.datacontainers.AlignmentLine;
 
 public class McBASCCovariance implements ScoreGenerator
 {	
+	private HashMap<String, Double> cachedVals = new HashMap<String,Double>();
+	
 	private static volatile int[][] maxhomMetric;
 	private static Object maxhomMetricGuard = new Object();
 	
@@ -22,8 +25,6 @@ public class McBASCCovariance implements ScoreGenerator
 	private float[] sds;
 	private Alignment a;
 	private int numSquared;
-	
-	private boolean isInitialized =false;
 	
 	@Override
 	public Alignment getAlignment()
@@ -109,11 +110,7 @@ public class McBASCCovariance implements ScoreGenerator
 	public McBASCCovariance( Alignment a) throws Exception
 	{
 		this.a = a;	
-		if( ! isInitialized)
-		{
-			initialize();
-			isInitialized = true;
-		}
+		initialize();
 	}
 	
 	public static int[][] getMaxhomMetric() throws Exception
@@ -243,19 +240,18 @@ public class McBASCCovariance implements ScoreGenerator
 	 */
 	public synchronized double getScore(Alignment a, int i, int j) throws Exception
 	{
-		if( ! isInitialized)
-		{
-			initialize();
-			isInitialized = true;
-		}
-		
 		if ( a != this.a ) 
 			throw new Exception("Please call on alignment passed into constructor!");
 			
 		// if either column is perfectly conserved, move it somewhere out of the way
 		if ( sds[i] == 0 || sds[j] == 0 ) 
 			return COBS_CONSISTENT;
-			
+	
+		String key = i +"@" + j;
+		
+		if( cachedVals.containsKey(key) )
+			return cachedVals.get(key);
+		
 		float sum = 0;
 		
 		for ( int x=0; x < a.getNumSequencesInAlignment(); x++ ) 
@@ -281,6 +277,10 @@ public class McBASCCovariance implements ScoreGenerator
 			}
 		}
 		
+		double val =  2 *  sum / ( this.numSquared * sds[i] * sds[j]);
+		
+		cachedVals.put(key,val);
+		
 		// the factor of 2 multiplication is an approximation for performance.
 		// the half triangle in the matrix does not have exactly half the comparisons of the
 		// full triangle.  This approximation will approach being exact 
@@ -288,7 +288,7 @@ public class McBASCCovariance implements ScoreGenerator
 		// For small alignments with few sequences, however, this approximation may effect the score
 		// Looking at this now, it seems kind of sloppy, but because we only used large aligments in the paper
 		// ( >50 sequences), it made almost no difference to our results
-		return 2 *  sum / ( this.numSquared * sds[i] * sds[j]);
+		return val;
 	}
 
 	public boolean isSymmetrical()
