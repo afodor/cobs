@@ -76,16 +76,50 @@ public class HelixSheetGroup
 			if( ! alreadyThere(hsg, returnList))
 				returnList.add(hsg);
 		
+		for(HelixSheetGroup hsg : returnList)
+			trimMatchingEnds(hsg, returnList);
+		
 		return returnList;
 	}
 	
 	private static boolean alreadyThere(  HelixSheetGroup hsg, List<HelixSheetGroup> list )
 	{
 		for( HelixSheetGroup aHsg : list )
-			if( hsg.startPos ==  aHsg.startPos && hsg.endPos == aHsg.endPos)
+		{
+			//System.out.println( hsg + " vs " + aHsg);
+			
+			if( hsg.startPos >= aHsg.startPos && hsg.startPos<= aHsg.endPos)
 				return true;
-		
+			
+			if( aHsg.startPos >= hsg.startPos && aHsg.startPos <= hsg.endPos)
+				return true;
+			
+			System.out.println("OK\n\n");
+		}
+			
 		return false;
+	}
+	
+	
+	private static void trimMatchingEnds(  HelixSheetGroup hsg, List<HelixSheetGroup> list )
+	{
+		for( HelixSheetGroup aHsg : list )
+		{
+			if( aHsg != hsg)			
+			{
+				//System.out.println("hsg " + hsg);
+				//System.out.println("ahsg " + aHsg);
+			
+				//trim if overlapping to avoid residues being compared to themselves
+				if( aHsg.endPos==hsg.startPos)
+					aHsg.endPos =  --aHsg.endPos;
+				
+				if( hsg.endPos == aHsg.startPos)
+					hsg.endPos= --hsg.endPos;
+				
+				//System.out.println("Post " + aHsg + "\n\n\n");
+			}			
+		}
 	}
 	
 	public static List<HelixSheetGroup> getList(String pdbFile) throws Exception
@@ -129,7 +163,10 @@ public class HelixSheetGroup
 	
 	public static void main(String[] args) throws Exception
 	{
-		for( HelixSheetGroup hsg : getList(ConfigReader.getCobsHomeDirectory() + File.separator + "2sns.pdb"))
+		List<HelixSheetGroup> list = getList(
+				ConfigReader.getPdbDir() + File.separator + "1DXJ.txt",'A',1,230);
+		
+		for( HelixSheetGroup hsg : list)
 				System.out.println(hsg.element + " " +  hsg.startPos + " " + hsg.endPos);
 	}
 }

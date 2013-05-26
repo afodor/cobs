@@ -37,7 +37,7 @@ public class WriteScores
 	public static final int MIN_PDB_LENGTH = 80;
 	public static final double MIN_PERCENT_IDENTITY= 90;
 	public static MaxhomSubstitutionMatrix substitutionMatrix;
-	public static final int NUM_THREADS = 8;
+	public static final int NUM_THREADS = 1;
 	
 	static
 	{
@@ -60,6 +60,15 @@ public class WriteScores
 				a.getAligmentID() + "_" + "McBASC"+ ".txt");
 	}
 	
+
+	private static File getRandomFileName(Alignment a) throws Exception
+	{
+		return new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
+				"oneD" + File.separator + 
+				a.getAligmentID() + "_" + "random"+ ".txt");
+	}
+	
+	
 	private static FileScoreGenerator getMcBascFSGorNull(Alignment a) throws Exception
 	{
 		File file = getMcBascFileName(a);
@@ -72,6 +81,29 @@ public class WriteScores
 		}
 			
 		FileScoreGenerator fsg = new FileScoreGenerator("McBASC", file, a);
+		
+		if( a.getNumColumnsInAlignment() * (a.getNumColumnsInAlignment()-1) / 2 != fsg.getNumScores() )
+		{
+			System.out.println("Truncated " + file.getAbsolutePath());			
+			return null;
+			
+		}
+			
+		return fsg;
+	}
+	
+	private static FileScoreGenerator getRandomOrNull(Alignment a) throws Exception
+	{
+		File file = getRandomFileName(a);
+		
+		if (! file.exists())
+		{
+			System.out.println("Could not find " + file.getAbsolutePath());
+			return null;
+			
+		}
+			
+		FileScoreGenerator fsg = new FileScoreGenerator("random", file, a);
 		
 		if( a.getNumColumnsInAlignment() * (a.getNumColumnsInAlignment()-1) / 2 != fsg.getNumScores() )
 		{
@@ -108,18 +140,22 @@ public class WriteScores
 			{
 				FileScoreGenerator mcbascFSG = getMcBascFSGorNull(a);
 				
-				if( mcbascFSG != null)
+				if(true)//if( mcbascFSG != null)
 				{
 					System.out.println("Starting " + a.getAligmentID());
 					
+					/*
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
 							new AverageScoreGenerator(mcbascFSG));
 					
+					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new COBS());
+					*/
 					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
-						new AverageScoreGenerator(new RandomScore(a.getAligmentID() +"_random",a)));
+						new AverageScoreGenerator(getRandomOrNull(a)));
 					
+					/*
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
 							new AverageScoreGenerator(new PNormalize(new MICovariance(a))));
 					
@@ -134,6 +170,7 @@ public class WriteScores
 					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
 							new AverageScoreGenerator( new PNormalize(mcbascFSG)));
+							*/
 				}
 				else
 				{	

@@ -8,9 +8,7 @@ import java.util.HashMap;
 import java.util.concurrent.Semaphore;
 
 import utils.ConfigReader;
-import covariance.algorithms.ConservationSum;
 import covariance.algorithms.FileScoreGenerator;
-import covariance.algorithms.MICovariance;
 import covariance.algorithms.McBASCCovariance;
 import covariance.algorithms.RandomScore;
 import covariance.algorithms.ScoreGenerator;
@@ -38,9 +36,9 @@ public class WriteOneDScores
 				// McBASC is all we really need to cache; the other algorithsm are fast
 				//kickOneOffIfFileDoesNotExist(semaphore, a, new ConservationSum(a));
 				//kickOneOffIfFileDoesNotExist(semaphore, a, new MICovariance(a));
-				//kickOneOffIfFileDoesNotExist(semaphore, a, new RandomScore());
+				kickOneOffIfFileDoesNotExist(semaphore, a, new RandomScore());
 				
-				kickOneOffIfFileDoesNotExist(semaphore, a, new McBASCCovariance(a));
+				//kickOneOffIfFileDoesNotExist(semaphore, a, new McBASCCovariance(a));
 			}
 		}
 	}
