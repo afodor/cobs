@@ -37,7 +37,7 @@ public class WriteScores
 	public static final int MIN_PDB_LENGTH = 80;
 	public static final double MIN_PERCENT_IDENTITY= 90;
 	public static MaxhomSubstitutionMatrix substitutionMatrix;
-	public static final int NUM_THREADS = 1;
+	public static final int NUM_THREADS = 8;
 	
 	static
 	{

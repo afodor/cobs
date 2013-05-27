@@ -26,7 +26,7 @@ public class ExamineAlignments
 		while(true)
 		{
 			Alignment a = parser.getNextAlignment();
-			//System.out.println(a.getAligmentID());
+			System.out.println(a.getAligmentID());
 			
 			try
 			{
