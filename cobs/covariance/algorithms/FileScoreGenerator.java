@@ -19,16 +19,13 @@ public class FileScoreGenerator implements ScoreGenerator
 	private int lastJ;
 	
 	@Override
+	/*
+	 * Assumes i < j
+	 */
 	public Double getScore(Alignment a, int i, int j) throws Exception
 	{
 		
-		if( j < i )
-		{
-			int temp = i;
-			i = j;
-			j= temp;
-		}
-
+	
 		Double score = scores.get(i + "@" + j);
 		
 		if( score == null)

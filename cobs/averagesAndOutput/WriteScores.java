@@ -13,10 +13,8 @@ import java.util.concurrent.Semaphore;
 
 import parsingGrouping.HelixSheetGroup;
 import parsingGrouping.COBS;
-import parsingGrouping.PfamToPDB;
 
 import utils.ConfigReader;
-
 
 import covariance.algorithms.ConservationSum;
 import covariance.algorithms.FileScoreGenerator;
@@ -37,7 +35,7 @@ public class WriteScores
 	public static final int MIN_PDB_LENGTH = 80;
 	public static final double MIN_PERCENT_IDENTITY= 90;
 	public static MaxhomSubstitutionMatrix substitutionMatrix;
-	public static final int NUM_THREADS = 8;
+	public static final int NUM_THREADS = 1;
 	
 	static
 	{
@@ -121,7 +119,6 @@ public class WriteScores
 		
 		System.out.println(pfamToPdbmap.keySet());
 		
-		HashMap<String, PfamToPDB> otherPfamMap = PfamToPDB.getMapByName();
 		Semaphore semaphore = new Semaphore(NUM_THREADS);
 		
 		PfamParser parser = new PfamParser();
@@ -131,14 +128,13 @@ public class WriteScores
 						a = parser.getNextAlignment())
 		{
 			PfamToPDBAnnotations toPdb = pfamToPdbmap.get(a.getAligmentID());
-			PfamToPDB otherPdb = otherPfamMap.get(a.getAligmentID());
 			
 			System.out.println("Trying " + a.getAligmentID());
 			
 			if( toPdb != null && (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= MIN_PDB_LENGTH 
 						&& toPdb.getPercentIdentity() >= MIN_PERCENT_IDENTITY  )
 			{
-				FileScoreGenerator mcbascFSG = getMcBascFSGorNull(a);
+				//FileScoreGenerator mcbascFSG = getMcBascFSGorNull(a);
 				
 				if(true)//if( mcbascFSG != null)
 				{
@@ -152,7 +148,7 @@ public class WriteScores
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new COBS());
 					*/
 					
-					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb,
 						new AverageScoreGenerator(getRandomOrNull(a)));
 					
 					/*
@@ -195,14 +191,14 @@ public class WriteScores
 	 * The syncrhonized is just to force all threads to the most up-to-date view of the data
 	 */
 	private static synchronized void kickOneOffIfFileDoesNotExist(Semaphore semaphore, Alignment a, PfamToPDBAnnotations toPdb, 
-			PfamToPDB otherPdb, GroupOfColumnsInterface gci) throws Exception
+			GroupOfColumnsInterface gci) throws Exception
 	{
 		File outFile = getOutputFile(a, gci);
 		
 		if(! outFile.exists())
 		{
 			semaphore.acquire();
-			Worker w = new Worker(a,toPdb,otherPdb,gci, semaphore);
+			Worker w = new Worker(a,toPdb,gci, semaphore);
 				new Thread(w).start();
 		}
 		else
@@ -223,16 +219,14 @@ public class WriteScores
 	{
 		private final Alignment a;
 		private final PfamToPDBAnnotations toPDB;
-		private final PfamToPDB otherToPdb;
 		private final GroupOfColumnsInterface gci;
 		private final Semaphore semaphore;
 		
 		private Worker(Alignment a, PfamToPDBAnnotations toPDB,
-				PfamToPDB otherToPdb, GroupOfColumnsInterface gci, Semaphore semaphore)
+				GroupOfColumnsInterface gci, Semaphore semaphore)
 		{
 			this.a = a;
 			this.toPDB = toPDB;
-			this.otherToPdb = otherToPdb;
 			this.gci = gci;
 			this.semaphore = semaphore;
 		}
@@ -254,11 +248,19 @@ public class WriteScores
 				writer.flush();
 				
 				System.out.println(a.getAligmentID());
-				HashMap<Integer, Integer> pdbToAlignmentNumberMap=  getPdbToAlignmentNumberMap(a, toPDB, otherToPdb, fileWrapper);
+				HashMap<Integer, Integer> pdbToAlignmentNumberMap=  getPdbToAlignmentNumberMap(a, toPDB, fileWrapper);
 				List<HelixSheetGroup> helixSheetGroup= 
 						HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPDB.getPdbID() + ".txt",
-								otherToPdb.getChainID(), toPDB.getQueryStart(), toPDB.getQueryEnd());
+								toPDB.getChainId(), toPDB.getQueryStart(), toPDB.getQueryEnd());
 				System.out.println(helixSheetGroup);
+				
+				for(HelixSheetGroup hsg : helixSheetGroup)
+				{
+					System.out.println( hsg.getStartPos() + "-" + hsg.getEndPos() + " " +  
+							pdbToAlignmentNumberMap.get(hsg.getStartPos()) +  "-" + 
+							pdbToAlignmentNumberMap.get(hsg.getEndPos()));
+				}
+					
 				
 				for(int x=0; x< helixSheetGroup.size() -1; x++)
 				{
@@ -286,12 +288,12 @@ public class WriteScores
 						writer.write(score+ "\t");
 						
 						double distance = 
-								getAverageDistance(fileWrapper, xHSG, yHSG, otherToPdb.getChainID());
+								getAverageDistance(fileWrapper, xHSG, yHSG, toPDB.getChainId());
 						
 						writer.write(distance + "\t");
 						
 						double minDistance = 
-								getMinDistance(fileWrapper, xHSG, yHSG, otherToPdb.getChainID());
+								getMinDistance(fileWrapper, xHSG, yHSG, toPDB.getChainId());
 						
 						writer.write(minDistance + "\n");
 						writer.flush();
@@ -389,7 +391,7 @@ public class WriteScores
 	
 	
 	public static HashMap<Integer, Integer> getPdbToAlignmentNumberMap( Alignment a, PfamToPDBAnnotations toPDB,
-			 PfamToPDB otherToPdb, PdbFileWrapper fileWrapper) throws Exception
+			 PdbFileWrapper fileWrapper) throws Exception
 	{
 		HashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
 		AlignmentLine aLine = a.getAnAlignmentLine(toPDB.getPfamLine());
@@ -400,8 +402,10 @@ public class WriteScores
 		if(alignmentSeq.indexOf("-") != -1)
 			throw new Exception("No " + alignmentSeq);
 		
-		String pdbSeq = fileWrapper.getChain(otherToPdb.getChainID()).getSequence().substring(toPDB.getQueryStart()-1,
+		String pdbSeq = fileWrapper.getChain(toPDB.getChainId()).getSequence().substring(toPDB.getQueryStart()-1,
 																		toPDB.getQueryEnd());
+		
+		pdbSeq = pdbSeq.toUpperCase();
 		
 		PairedAlignment pa = 
 				NeedlemanWunsch.globalAlignTwoSequences(

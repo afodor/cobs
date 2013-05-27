@@ -27,10 +27,16 @@ public class PfamToPDBAnnotations
 	private int targetStart;
 	private int targetEnd;
 	private double percentIdentity;
+	private char chainId;
 	
 	public String getPfamID()
 	{
 		return pfamID;
+	}
+	
+	public char getChainId()
+	{
+		return chainId;
 	}
 
 	public int getNumSequences()
@@ -148,6 +154,13 @@ public class PfamToPDBAnnotations
 				
 				if( a.targetEnd < a.targetStart)
 					throw new Exception("No");
+				
+				String chainToken = splits[11];
+				
+				if(chainToken.length() > 1)
+					throw new Exception("Unexpected token");
+				
+				
 				
 				list.add(a);
 				

@@ -4,13 +4,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import utils.ConfigReader;
 
 
-public class HelixSheetGroup
+public class HelixSheetGroup implements Comparable<HelixSheetGroup>
 {
 	public static final String HELIX = "HELIX";
 	public static final String SHEET = "SHEET";
@@ -21,6 +22,12 @@ public class HelixSheetGroup
 	private int endPos;
 	private char startChain;
 	private char endChain;
+
+	@Override
+	public int compareTo(HelixSheetGroup o)
+	{
+		return this.startPos - o.startPos;
+	}
 	
 	@Override
 	public String toString()
@@ -94,7 +101,7 @@ public class HelixSheetGroup
 			if( aHsg.startPos >= hsg.startPos && aHsg.startPos <= hsg.endPos)
 				return true;
 			
-			System.out.println("OK\n\n");
+			//System.out.println("OK\n\n");
 		}
 			
 		return false;
@@ -158,6 +165,7 @@ public class HelixSheetGroup
 		}
 		
 		reader.close();
+		Collections.sort(list);
 		return list;
 	}
 	
