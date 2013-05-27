@@ -1,4 +1,4 @@
-package averagesAndOutput;
+package cobsScripts;
 
 import java.io.BufferedWriter;
 import java.io.File;

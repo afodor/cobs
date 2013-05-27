@@ -1,4 +1,4 @@
-package averagesAndOutput;
+package cobsScripts;
 
 
 import covariance.datacontainers.Alignment;

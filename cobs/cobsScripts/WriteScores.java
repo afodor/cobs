@@ -1,4 +1,4 @@
-package averagesAndOutput;
+package cobsScripts;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,6 +26,7 @@ import covariance.datacontainers.AlignmentLine;
 import covariance.datacontainers.PdbFileWrapper;
 import covariance.datacontainers.PdbResidue;
 import covariance.parsers.PfamParser;
+import covariance.parsers.PfamToPDBBlastResults;
 import dynamicProgramming.MaxhomSubstitutionMatrix;
 import dynamicProgramming.NeedlemanWunsch;
 import dynamicProgramming.PairedAlignment;
@@ -115,7 +116,7 @@ public class WriteScores
 	
 	public static void main(String[] args) throws Exception
 	{
-		HashMap<String, PfamToPDBAnnotations> pfamToPdbmap = PfamToPDBAnnotations.getAnnotationsAsMap();
+		HashMap<String, PfamToPDBBlastResults> pfamToPdbmap = PfamToPDBBlastResults.getAnnotationsAsMap();
 		
 		System.out.println(pfamToPdbmap.keySet());
 		
@@ -127,7 +128,7 @@ public class WriteScores
 					a != null;
 						a = parser.getNextAlignment())
 		{
-			PfamToPDBAnnotations toPdb = pfamToPdbmap.get(a.getAligmentID());
+			PfamToPDBBlastResults toPdb = pfamToPdbmap.get(a.getAligmentID());
 			
 			System.out.println("Trying " + a.getAligmentID());
 			
@@ -190,7 +191,7 @@ public class WriteScores
 	/*
 	 * The syncrhonized is just to force all threads to the most up-to-date view of the data
 	 */
-	private static synchronized void kickOneOffIfFileDoesNotExist(Semaphore semaphore, Alignment a, PfamToPDBAnnotations toPdb, 
+	private static synchronized void kickOneOffIfFileDoesNotExist(Semaphore semaphore, Alignment a, PfamToPDBBlastResults toPdb, 
 			GroupOfColumnsInterface gci) throws Exception
 	{
 		File outFile = getOutputFile(a, gci);
@@ -218,11 +219,11 @@ public class WriteScores
 	private static class Worker implements Runnable
 	{
 		private final Alignment a;
-		private final PfamToPDBAnnotations toPDB;
+		private final PfamToPDBBlastResults toPDB;
 		private final GroupOfColumnsInterface gci;
 		private final Semaphore semaphore;
 		
-		private Worker(Alignment a, PfamToPDBAnnotations toPDB,
+		private Worker(Alignment a, PfamToPDBBlastResults toPDB,
 				GroupOfColumnsInterface gci, Semaphore semaphore)
 		{
 			this.a = a;
@@ -390,7 +391,7 @@ public class WriteScores
 		}
 	
 	
-	public static HashMap<Integer, Integer> getPdbToAlignmentNumberMap( Alignment a, PfamToPDBAnnotations toPDB,
+	public static HashMap<Integer, Integer> getPdbToAlignmentNumberMap( Alignment a, PfamToPDBBlastResults toPDB,
 			 PdbFileWrapper fileWrapper) throws Exception
 	{
 		HashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();

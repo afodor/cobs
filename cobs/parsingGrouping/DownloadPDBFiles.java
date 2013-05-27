@@ -2,19 +2,19 @@ package parsingGrouping;
 
 import java.util.HashMap;
 
-import averagesAndOutput.PfamToPDBAnnotations;
 
 import scripts.PdbDownloadFromHTTP;
 
 import covariance.datacontainers.Alignment;
 import covariance.parsers.PfamParser;
+import covariance.parsers.PfamToPDBBlastResults;
 
 public class DownloadPDBFiles
 {
 	public static void main(String[] args) throws Exception
 	{
 
-		HashMap<String, PfamToPDBAnnotations> pdbMap = PfamToPDBAnnotations.getAnnotationsAsMap();
+		HashMap<String, PfamToPDBBlastResults> pdbMap = PfamToPDBBlastResults.getAnnotationsAsMap();
 		
 		PfamParser parser = new PfamParser(true);
 
@@ -24,7 +24,7 @@ public class DownloadPDBFiles
 		{
 			System.out.println(a.getAligmentID());
 			
-			PfamToPDBAnnotations pdb = pdbMap.get(a.getAligmentID());
+			PfamToPDBBlastResults pdb = pdbMap.get(a.getAligmentID());
 			
 			if( pdb != null)
 			{

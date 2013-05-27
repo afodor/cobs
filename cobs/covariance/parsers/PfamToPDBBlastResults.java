@@ -1,4 +1,4 @@
-package averagesAndOutput;
+package covariance.parsers;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,7 +12,7 @@ import java.util.List;
 import utils.ConfigReader;
 
 
-public class PfamToPDBAnnotations
+public class PfamToPDBBlastResults
 {
 	//pfamID	numSequences	numColumns	pdbid	pfamLine	eScore	queryStart	queryEnd	targetStart	targetEnd	percentIdentity
 
@@ -103,13 +103,13 @@ public class PfamToPDBAnnotations
 	 * 
 	 * The key is the pfamID
 	 */
-	public static HashMap<String, PfamToPDBAnnotations> getAnnotationsAsMap() throws Exception
+	public static HashMap<String, PfamToPDBBlastResults> getAnnotationsAsMap() throws Exception
 	{
-		HashMap<String, PfamToPDBAnnotations> map = new LinkedHashMap<String, PfamToPDBAnnotations>();
+		HashMap<String, PfamToPDBBlastResults> map = new LinkedHashMap<String, PfamToPDBBlastResults>();
 		
-		List<PfamToPDBAnnotations> list = getAnnotations();
+		List<PfamToPDBBlastResults> list = getAnnotations();
 		
-		for(PfamToPDBAnnotations p : list)
+		for(PfamToPDBBlastResults p : list)
 		{
 			if(map.containsKey(p.getPfamID()))
 				throw new Exception("No");
@@ -123,9 +123,9 @@ public class PfamToPDBAnnotations
 	/*
 	 * First run kyleCleanroom2.WriteBestHitsForPFAM
 	 */
-	public static List<PfamToPDBAnnotations> getAnnotations() throws Exception
+	public static List<PfamToPDBBlastResults> getAnnotations() throws Exception
 	{
-		List<PfamToPDBAnnotations> list = new ArrayList<PfamToPDBAnnotations>();
+		List<PfamToPDBBlastResults> list = new ArrayList<PfamToPDBBlastResults>();
 		
 //		File f = new File("delete.txt");
 //		System.out.println(f.getAbsolutePath());
@@ -136,7 +136,7 @@ public class PfamToPDBAnnotations
 			for(String s= reader.readLine(); s != null; s= reader.readLine())
 			{
 				String[] splits = s.split("\t");
-				PfamToPDBAnnotations a = new PfamToPDBAnnotations();
+				PfamToPDBBlastResults a = new PfamToPDBBlastResults();
 				a.pfamID = splits[0];
 				a.numSequences = Integer.parseInt(splits[1]);
 				a.numColumns = Integer.parseInt(splits[2]);
@@ -166,7 +166,7 @@ public class PfamToPDBAnnotations
 				
 			}
 			
-			List<PfamToPDBAnnotations> answer = Collections.unmodifiableList(list);
+			List<PfamToPDBBlastResults> answer = Collections.unmodifiableList(list);
 			if (answer.size() < 1){
 				throw new IndexOutOfBoundsException("No parsing worked!");
 			}

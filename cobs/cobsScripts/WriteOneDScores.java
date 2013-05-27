@@ -1,4 +1,4 @@
-package averagesAndOutput;
+package cobsScripts;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,12 +14,13 @@ import covariance.algorithms.RandomScore;
 import covariance.algorithms.ScoreGenerator;
 import covariance.datacontainers.Alignment;
 import covariance.parsers.PfamParser;
+import covariance.parsers.PfamToPDBBlastResults;
 
 public class WriteOneDScores
 {
 	public static void main(String[] args) throws Exception
 	{
-		HashMap<String, PfamToPDBAnnotations> pfamToPdbmap = PfamToPDBAnnotations.getAnnotationsAsMap();
+		HashMap<String, PfamToPDBBlastResults> pfamToPdbmap = PfamToPDBBlastResults.getAnnotationsAsMap();
 		Semaphore semaphore = new Semaphore(WriteScores.NUM_THREADS);
 		
 		PfamParser parser = new PfamParser();
@@ -28,7 +29,7 @@ public class WriteOneDScores
 					a != null;
 						a = parser.getNextAlignment())
 		{
-			PfamToPDBAnnotations toPdb = pfamToPdbmap.get(a.getAligmentID());
+			PfamToPDBBlastResults toPdb = pfamToPdbmap.get(a.getAligmentID());
 			
 			if( toPdb != null &&  (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= WriteScores.MIN_PDB_LENGTH 
 					&& toPdb.getPercentIdentity() >= WriteScores.MIN_PERCENT_IDENTITY  )

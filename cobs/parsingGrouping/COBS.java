@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import averagesAndOutput.GroupOfColumnsInterface;
+import cobsScripts.GroupOfColumnsInterface;
+
 
 import utils.MapResiduesToIndex;
 import utils.Pearson;

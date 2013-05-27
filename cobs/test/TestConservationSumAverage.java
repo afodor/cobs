@@ -3,9 +3,10 @@ package test;
 import java.io.File;
 import java.util.Random;
 
+import cobsScripts.AverageScoreGenerator;
+
 import junit.framework.TestCase;
 
-import averagesAndOutput.AverageScoreGenerator;
 
 import utils.ConfigReader;
 
