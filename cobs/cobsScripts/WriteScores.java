@@ -390,6 +390,26 @@ public class WriteScores
 			return val;
 		}
 	
+	public static double getFractionIdentity(String pdbString, String pfamString) throws Exception
+	{
+		double num =0;
+		double numMatch=0;
+		
+		for( int x=0; x < pdbString.length(); x++)
+		{
+			char c = pdbString.charAt(x);
+			
+			if ( c != '-')
+			{
+				num++;
+				
+				if( c == pfamString.charAt(x))
+					numMatch++;
+			}
+		}
+		
+		return numMatch / num;
+	}
 	
 	public static HashMap<Integer, Integer> getPdbToAlignmentNumberMap( Alignment a, PfamToPDBBlastResults toPDB,
 			 PdbFileWrapper fileWrapper) throws Exception
@@ -414,6 +434,13 @@ public class WriteScores
 		
 		System.out.println(pa.getFirstSequence());
 		System.out.println(pa.getSecondSequence());
+		
+		double fractionMatch = getFractionIdentity(pa.getFirstSequence(), pa.getSecondSequence());
+		
+		System.out.println("fractionMatch = " + fractionMatch);
+		
+		if( fractionMatch < 0.9)
+			throw new Exception("Alignment failure");
 		
 		int x=-1;
 		int alignmentPos =-1;

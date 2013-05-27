@@ -110,7 +110,7 @@ public class SequenceUtils
 		for ( int x=0; x< a.getAnnotationParsers().length; x++ )
 		{
 		
-			String pdbPath = ConfigReader.getLocalPdbDirectory() + File.separator + 
+			String pdbPath = ConfigReader.getPdbDir() + File.separator + 
 								a.getAnnotationParsers()[x].getFourCharId();
 			
 			PdbFileWrapper pdbFileWrapper = null;

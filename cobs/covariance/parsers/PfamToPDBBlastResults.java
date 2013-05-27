@@ -160,7 +160,7 @@ public class PfamToPDBBlastResults
 				if(chainToken.length() > 1)
 					throw new Exception("Unexpected token");
 				
-				
+				a.chainId = chainToken.charAt(0);
 				
 				list.add(a);
 				

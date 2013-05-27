@@ -11,7 +11,6 @@ public class ConfigReader
 	public static final String CLUSTAL_DIRECTORY="CLUSTAL_DIRECTORY";
 	public static final String COBS_HOME_DIRECTORY="COBS_HOME_DIRECTORY";
 	public static final String FULL_PFAM_PATH="FULL_PFAM_PATH";
-	public static final String LOCAL_PDB_DIRECTORY="LOCAL_PDB_DIRECTORY";
 	public static final String OUT_DATA_DIR="OUT_DATA_DIR";
 	public static final String GZIP_FULL_PATH="GZIP_FULL_PATH";
 	public static final String COBS_CLEANROOM = "COBS_CLEANROOM";
@@ -101,11 +100,6 @@ public class ConfigReader
 		return getConfigReader().getAProperty( PDB_DIR);
 	}
 	
-	
-	public static String getLocalPdbDirectory() throws Exception
-	{
-		return getConfigReader().getAProperty( LOCAL_PDB_DIRECTORY );
-	}
 	
 	public static String getOutDataDir() throws Exception
 	{

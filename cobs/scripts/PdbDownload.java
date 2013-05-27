@@ -67,7 +67,7 @@ public class PdbDownload
 	
 	public static String getFilePath( String pdbID ) throws Exception
 	{
-		return ConfigReader.getLocalPdbDirectory() + 
+		return ConfigReader.getPdbDir() + 
 			   File.separator + pdbID ;
 	}
 }

@@ -25,8 +25,8 @@ public class PdbFileWrapper
 	
 	public PdbFileWrapper( String fourCharId ) throws Exception
 	{
-		this(new File( ConfigReader.getLocalPdbDirectory() + 
-							File.separator + fourCharId) );
+		this(new File( ConfigReader.getPdbDir()+ 
+							File.separator + fourCharId + ".txt") );
 	}
 	
 	public List getPdbChains()
