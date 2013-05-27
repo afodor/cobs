@@ -15,6 +15,7 @@ import parsingGrouping.HelixSheetGroup;
 import parsingGrouping.COBS;
 
 import utils.ConfigReader;
+import utils.MapResiduesToIndex;
 
 import covariance.algorithms.ConservationSum;
 import covariance.algorithms.FileScoreGenerator;
@@ -416,12 +417,24 @@ public class WriteScores
 	{
 		HashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
 		AlignmentLine aLine = a.getAnAlignmentLine(toPDB.getPfamLine());
-		String alignmentSeq = aLine.getSequence().toUpperCase();
+		String pFamSeq = aLine.getSequence().toUpperCase();
 		
-		alignmentSeq = alignmentSeq.replaceAll("-", ".");
+		HashMap<Integer, Integer> ungappedPfamToGappedPfamMap = new LinkedHashMap<>();
 		
-		if(alignmentSeq.indexOf("-") != -1)
-			throw new Exception("No " + alignmentSeq);
+		StringBuffer ungappedPfam = new StringBuffer();
+		int ungappedPosition =-1;
+		
+		for( int x=0; x< pFamSeq.length(); x++)
+		{
+			char c = pFamSeq.charAt(x);
+			
+			if( MapResiduesToIndex.isValidResidueChar(c) )
+			{
+				ungappedPfam.append(c);
+				ungappedPosition++;
+				ungappedPfamToGappedPfamMap.put(ungappedPosition, x);
+			}
+		}
 		
 		String pdbSeq = fileWrapper.getChain(toPDB.getChainId()).getSequence().substring(toPDB.getQueryStart()-1,
 																		toPDB.getQueryEnd());
@@ -430,7 +443,7 @@ public class WriteScores
 		
 		PairedAlignment pa = 
 				NeedlemanWunsch.globalAlignTwoSequences(
-						pdbSeq, alignmentSeq, substitutionMatrix, -3, -1, false);
+						pdbSeq, ungappedPfam.toString(), substitutionMatrix, -3, 0, false);
 		
 		System.out.println(pa.getFirstSequence());
 		System.out.println(pa.getSecondSequence());
@@ -440,8 +453,10 @@ public class WriteScores
 		System.out.println("fractionMatch = " + fractionMatch);
 		
 		if( fractionMatch < 0.9)
+		{
 			throw new Exception("Alignment failure");
-		
+		}
+			
 		int x=-1;
 		int alignmentPos =-1;
 		int pdbNumber = toPDB.getQueryStart() -1;
@@ -457,10 +472,31 @@ public class WriteScores
 			{
 				pdbNumber++;
 				
-				map.put(pdbNumber,Math.max(0, alignmentPos));
+				map.put(pdbNumber,ungappedPfamToGappedPfamMap.get(alignmentPos));
 			}
+		}
+		
+		double num=0;
+		double numMatch =0;
+		for(Integer pdbNum : map.keySet())
+		{
+			num++;
+			char pdbChar = pdbSeq.charAt(pdbNum- toPDB.getQueryStart());
+			char pfamChar = pFamSeq.charAt(map.get(pdbNum));
+			
+			if( pdbChar == pfamChar)
+				numMatch++;
+			
+			System.out.println(pdbNum + " " + pdbChar + " " + map.get(pdbNum) + " " + pfamChar);
 			
 		}
+		
+		double postAlignmentMatch = numMatch / num;
+		
+		System.out.println("Post alignment match = " + postAlignmentMatch);
+		
+		if( postAlignmentMatch <0.9)
+			throw new Exception("Alignment failure!");
 		
 		return map;
 	}
