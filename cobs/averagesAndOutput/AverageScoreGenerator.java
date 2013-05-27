@@ -29,9 +29,6 @@ public class AverageScoreGenerator implements GroupOfColumnsInterface
 			int leftPosEnd, int rightPosStart, int rightPosEnd)
 			throws Exception
 	{
-		if( leftPosEnd == rightPosStart)
-			leftPosEnd--;
-		
 		//System.out.println("CHECKING " + alignment.getAligmentID() + " " + 
 		//leftPosStart + " " + leftPosEnd + " " + rightPosStart + " " + rightPosEnd);
 		

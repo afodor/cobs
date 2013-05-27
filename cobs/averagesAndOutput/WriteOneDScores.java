@@ -38,7 +38,7 @@ public class WriteOneDScores
 				//kickOneOffIfFileDoesNotExist(semaphore, a, new MICovariance(a));
 				kickOneOffIfFileDoesNotExist(semaphore, a, new RandomScore());
 				
-				//kickOneOffIfFileDoesNotExist(semaphore, a, new McBASCCovariance(a));
+				kickOneOffIfFileDoesNotExist(semaphore, a, new McBASCCovariance(a));
 			}
 		}
 	}
