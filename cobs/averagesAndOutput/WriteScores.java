@@ -37,7 +37,7 @@ public class WriteScores
 	public static final int MIN_PDB_LENGTH = 80;
 	public static final double MIN_PERCENT_IDENTITY= 90;
 	public static MaxhomSubstitutionMatrix substitutionMatrix;
-	public static final int NUM_THREADS = 8;
+	public static final int NUM_THREADS = 1;
 	
 	static
 	{
@@ -138,7 +138,7 @@ public class WriteScores
 			if( toPdb != null && (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= MIN_PDB_LENGTH 
 						&& toPdb.getPercentIdentity() >= MIN_PERCENT_IDENTITY  )
 			{
-				FileScoreGenerator mcbascFSG = getMcBascFSGorNull(a);
+				//FileScoreGenerator mcbascFSG = getMcBascFSGorNull(a);
 				
 				if(true)//if( mcbascFSG != null)
 				{
@@ -259,6 +259,14 @@ public class WriteScores
 						HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPDB.getPdbID() + ".txt",
 								otherToPdb.getChainID(), toPDB.getQueryStart(), toPDB.getQueryEnd());
 				System.out.println(helixSheetGroup);
+				
+				for(HelixSheetGroup hsg : helixSheetGroup)
+				{
+					System.out.println( hsg.getStartPos() + "-" + hsg.getEndPos() + " " +  
+							pdbToAlignmentNumberMap.get(hsg.getStartPos()) +  "-" + 
+							pdbToAlignmentNumberMap.get(hsg.getEndPos()));
+				}
+					
 				
 				for(int x=0; x< helixSheetGroup.size() -1; x++)
 				{
@@ -402,6 +410,8 @@ public class WriteScores
 		
 		String pdbSeq = fileWrapper.getChain(otherToPdb.getChainID()).getSequence().substring(toPDB.getQueryStart()-1,
 																		toPDB.getQueryEnd());
+		
+		pdbSeq = pdbSeq.toUpperCase();
 		
 		PairedAlignment pa = 
 				NeedlemanWunsch.globalAlignTwoSequences(
