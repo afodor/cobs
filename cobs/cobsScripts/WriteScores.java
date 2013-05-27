@@ -445,16 +445,17 @@ public class WriteScores
 				NeedlemanWunsch.globalAlignTwoSequences(
 						pdbSeq, ungappedPfam.toString(), substitutionMatrix, -3, 0, false);
 		
-		System.out.println(pa.getFirstSequence());
-		System.out.println(pa.getSecondSequence());
+		//System.out.println(pa.getFirstSequence());
+		//System.out.println(pa.getSecondSequence());
 		
 		double fractionMatch = getFractionIdentity(pa.getFirstSequence(), pa.getSecondSequence());
 		
-		System.out.println("fractionMatch = " + fractionMatch);
+		//System.out.println("fractionMatch = " + fractionMatch);
 		
 		if( fractionMatch < 0.9)
 		{
-			throw new Exception("Alignment failure");
+			throw new Exception("Alignment failure\n" + pa.getFirstSequence() + "\n"
+						+ pa.getSecondSequence() + "\n" +	fractionMatch + "\n\n" );
 		}
 			
 		int x=-1;
@@ -478,6 +479,7 @@ public class WriteScores
 		
 		double num=0;
 		double numMatch =0;
+		StringBuffer out = new StringBuffer();
 		for(Integer pdbNum : map.keySet())
 		{
 			num++;
@@ -487,16 +489,16 @@ public class WriteScores
 			if( pdbChar == pfamChar)
 				numMatch++;
 			
-			System.out.println(pdbNum + " " + pdbChar + " " + map.get(pdbNum) + " " + pfamChar);
+			out.append(pdbNum + "\t" + pdbChar + "\t" + map.get(pdbNum) + "\t" + pfamChar + "\n");
 			
 		}
 		
 		double postAlignmentMatch = numMatch / num;
 		
-		System.out.println("Post alignment match = " + postAlignmentMatch);
+		//System.out.println("Post alignment match = " + postAlignmentMatch);
 		
 		if( postAlignmentMatch <0.9)
-			throw new Exception("Alignment failure!");
+			throw new Exception("Alignment failure\n" + postAlignmentMatch + "\n" + out + "\n\n");
 		
 		return map;
 	}

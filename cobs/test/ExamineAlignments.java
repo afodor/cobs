@@ -20,13 +20,17 @@ public class ExamineAlignments
 		PfamParser parser = new PfamParser();
 		HashMap<String, PfamToPDBBlastResults> map = PfamToPDBBlastResults.getAnnotationsAsMap();
 		
+		int numTried =0;
+		int numFailure =0;
+		
 		while(true)
 		{
 			Alignment a = parser.getNextAlignment();
-			System.out.println(a.getAligmentID());
+			//System.out.println(a.getAligmentID());
 			
-			//if( a.equals("Arch_ATPase"))
+			try
 			{
+				numTried++;
 				PfamToPDBBlastResults toPdb = map.get(a.getAligmentID());
 				
 				PdbFileWrapper fileWrapper = new PdbFileWrapper(toPdb.getPdbID());
@@ -35,10 +39,14 @@ public class ExamineAlignments
 				List<HelixSheetGroup> helixSheetGroup= 
 						HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPdb.getPdbID() + ".txt",
 								toPdb.getChainId(), toPdb.getQueryStart(), toPdb.getQueryEnd());
-				
-				
-				
 			}
+			catch(Exception ex)
+			{
+				ex.printStackTrace();
+				numFailure++;
+			}
+			
+			//System.out.println(numFailure + " IN " + numTried);
 		}
 	}
 		
