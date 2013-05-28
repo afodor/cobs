@@ -2,9 +2,12 @@ package covariance.algorithms;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.zip.GZIPInputStream;
 
 import covariance.datacontainers.Alignment;
 
@@ -75,7 +78,10 @@ public class FileScoreGenerator implements ScoreGenerator
 	{
 		this.name = name;
 		
-		BufferedReader reader = new BufferedReader(new FileReader(file));
+		BufferedReader reader = file.getName().toLowerCase().endsWith("gz") ? 
+				new BufferedReader(new InputStreamReader( 
+						new GZIPInputStream( new FileInputStream( file )))) :  
+				new BufferedReader(new FileReader(file)) ;
 		
 		reader.readLine();
 		
