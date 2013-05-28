@@ -213,7 +213,11 @@ public class WriteScores
 	
 	private static File getOutputFile(Alignment a, GroupOfColumnsInterface gci) throws Exception
 	{
-		return new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
+		File directory = new File( ConfigReader.getCleanroom() + File.separator + "results"); 
+		
+		directory.mkdirs();
+		
+		return new File( directory.getAbsolutePath() + File.separator + 
 				a.getAligmentID() + "_" + gci.getName() + ".txt");
 	}
 	

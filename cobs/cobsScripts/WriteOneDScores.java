@@ -83,10 +83,16 @@ public class WriteOneDScores
 		}
 	}
 	
+	
 	private static File getOutputFile(Alignment a, ScoreGenerator sg) throws Exception
 	{
-		return new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
-				"oneD" + File.separator + 
+		File resultsDir  =new File( ConfigReader.getCleanroom() + File.separator + "results"  + 
+				File.separator + 
+				"oneD" );
+		
+		resultsDir.mkdirs();
+		
+		return new File( resultsDir.getAbsolutePath() + File.separator + 
 				a.getAligmentID() + "_" + sg.getAnalysisName() + ".txt");
 	}
 	
