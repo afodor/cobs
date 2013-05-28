@@ -29,12 +29,17 @@ public class RocOnBigTable
 			
 			BufferedReader reader = new BufferedReader(new FileReader(new File(
 					ConfigReader.getCleanroom() + File.separator + 
-							"bigSummaries" + File.separator + "big" + fileSubString + (normalized ? "normed" : "") 
+							"bigSummaries" + File.separator + "big" + fileSubString + (normalized ? "normedLate" : "") 
 							+ ".txt")));
 			
+			File rocDir = new File(ConfigReader.getCleanroom() + File.separator + 
+					"roc" );
+			
+			rocDir.mkdirs();
+			
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
-					ConfigReader.getCleanroom() + File.separator + 
-					"roc" + File.separator + "bigROC" + fileSubString +(normalized ? "normed" : "")+ "_" + 
+					rocDir.getAbsolutePath() + File.separator 
+					+ "bigROC" + fileSubString +(normalized ? "normedLate" : "")+ "_" + 
 							".txt"));
 			
 			int numBelow50=0;

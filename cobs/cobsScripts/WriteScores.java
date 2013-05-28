@@ -129,7 +129,6 @@ public class WriteScores
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator(mcbascFSG));
 					
-					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, new COBS());
 					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb,

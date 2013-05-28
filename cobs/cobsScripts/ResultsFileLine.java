@@ -2,7 +2,9 @@ package cobsScripts;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.zip.GZIPInputStream;
 
 import utils.Avevar;
 
@@ -306,7 +309,10 @@ public final class ResultsFileLine
 	{
 		List<ResultsFileLine> list = new ArrayList<ResultsFileLine>();
 		
-		BufferedReader reader = new BufferedReader(new FileReader(file));
+		BufferedReader reader = file.getName().toLowerCase().endsWith("gz")
+				 ? new BufferedReader(new InputStreamReader( 
+							new GZIPInputStream( new FileInputStream( file )))) 
+					: new BufferedReader(new FileReader(file));
 		
 		reader.readLine();
 		

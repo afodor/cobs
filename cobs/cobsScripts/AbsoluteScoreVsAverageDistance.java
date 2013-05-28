@@ -46,9 +46,13 @@ public class AbsoluteScoreVsAverageDistance
 		
 		Collections.sort(bigList, new ResultsFileLine.SortByScore());
 		
-		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(ConfigReader.getCleanroom() + File.separator + 
-				"bigSummaries" + File.separator + "big" + fileSubString + (normalized ? "normedLate" : "") +".txt")
-		  ));
+		File bigSummariesDir = new File(ConfigReader.getCleanroom() + File.separator + 
+				"bigSummaries" );
+		
+		bigSummariesDir.mkdirs();
+		
+		BufferedWriter writer = new BufferedWriter(new FileWriter(bigSummariesDir + File.separator +
+				 File.separator + "big" + fileSubString + (normalized ? "normedLate" : "") +".txt"));
 		
 		writer.write("family\tscore\tregion1\tregion2\tpercentile\tavgDistance\ttype\tlistSize\tmedianDistance\n");
 		
@@ -88,7 +92,7 @@ public class AbsoluteScoreVsAverageDistance
 			if(s.contains(fileSubString + "."))
 			{
 				//Debug only
-				//System.out.println(s);
+				System.out.println(s);
 				
 				File fileToRead = new File(dataDir.getAbsolutePath() +
 						File.separator + s);
