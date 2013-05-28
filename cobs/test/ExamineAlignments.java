@@ -23,33 +23,39 @@ public class ExamineAlignments
 		int numTried =0;
 		int numFailure =0;
 		
-		while(true)
+		while( true)
 		{
 			Alignment a = parser.getNextAlignment();
-			System.out.println(a.getAligmentID());
 			
-			try
+			if( ! parser.isFinished())
 			{
-				numTried++;
-				PfamToPDBBlastResults toPdb = map.get(a.getAligmentID());
+				System.out.println(a.getAligmentID());
 				
-				PdbFileWrapper fileWrapper = new PdbFileWrapper(toPdb.getPdbID());
-				
-				HashMap<Integer, Integer> pdbToAlignmentNumberMap=  WriteScores.getPdbToAlignmentNumberMap(a, toPdb, fileWrapper);
-				List<HelixSheetGroup> helixSheetGroup= 
-						HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPdb.getPdbID() + ".txt",
-								toPdb.getChainId(), toPdb.getQueryStart(), toPdb.getQueryEnd());
+				try
+				{
+					numTried++;
+					PfamToPDBBlastResults toPdb = map.get(a.getAligmentID());
+					
+					PdbFileWrapper fileWrapper = new PdbFileWrapper(toPdb.getPdbID());
+					
+					HashMap<Integer, Integer> pdbToAlignmentNumberMap=  WriteScores.getPdbToAlignmentNumberMap(a, toPdb, fileWrapper);
+					List<HelixSheetGroup> helixSheetGroup= 
+							HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPdb.getPdbID() + ".txt",
+									toPdb.getChainId(), toPdb.getQueryStart(), toPdb.getQueryEnd());
+				}
+				catch(Exception ex)
+				{
+					ex.printStackTrace();
+					numFailure++;
+				}
 			}
-			catch(Exception ex)
+			else
 			{
-				ex.printStackTrace();
-				numFailure++;
+				System.out.println("Finished " + numTried + " "+ numFailure);
+				System.exit(1);
 			}
 			
-			//System.out.println(numFailure + " IN " + numTried);
-		}
+		} 
+		
 	}
-		
-		
-	//}
 }

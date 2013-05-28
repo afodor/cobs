@@ -13,8 +13,6 @@ import java.util.zip.GZIPInputStream;
 
 import covariance.parsers.PfamToPDBBlastResults;
 
-
-
 import utils.ConfigReader;
 
 public class WriteTruncatedPfamAlignments

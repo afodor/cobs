@@ -23,6 +23,7 @@ public class PfamParser
 	private BufferedReader pFamReader;
 	private int numLinesRead=0;
 	
+	
 	public boolean isFinished()
 	{
 		return finished;
@@ -58,22 +59,6 @@ public class PfamParser
 	}
 
 
-	public static Alignment getOneAlignment( String alignmentName ) throws Exception
-	{
-		PfamParser pFamParser = new PfamParser();
-		
-		while( ! pFamParser.isFinished() )
-		{
-			Alignment a = pFamParser.getNextAlignment();
-			System.out.println("Scanned " + a.getAligmentID() );
-			
-			if ( a.getAligmentID().equals( alignmentName) )
-				return a;	
-		}
-		
-		return null;
-	}
-
 	/**  gets the next alignment from the reader.
 	 * 
 	 *   The cursor in the reader should be set to a line that starts with "# STOCKHOLM 1.0"
@@ -94,6 +79,13 @@ public class PfamParser
 		
 		lastLineRead = getNextLine();
 		
+		// files produced by WriteTruncatedPfamAlignments may end here..
+		if( lastLineRead == null)
+		{
+			finished = true;
+			return null;
+		}
+			
 		if ( ! lastLineRead.startsWith("#=GF ID" )) 
 			throw new Exception("Error!  Second line should start #=GF ID at "+ numLinesRead );
 		
