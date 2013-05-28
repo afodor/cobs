@@ -17,6 +17,8 @@ public class ConfigReader
 	public static final String PDB_DIR = "PDB_DIR";
 	public static final String BLAST_DIR = "BLAST_DIR";
 	public static final String PDB_PFAM_CHAIN = "PDB_PFAM_CHAIN";
+	public static final String NUM_THREADS = "NUM_THREADS";
+	public static final String WRITE_GZIPPED_RESULTS = "WRITE_GZIPPED_RESULTS";
 	
 	public static final String TRUE="TRUE";
 	public static final String YES="YES";
@@ -130,5 +132,44 @@ public class ConfigReader
 	public static String getPdbPfamChain() throws Exception {
 		return getConfigReader().getAProperty(PDB_PFAM_CHAIN);
 	}
+	
+	/*
+	 * Defaluts to 1 - does not throw
+	 */
+	public static int getNumThreads() 
+	{
+		try
+		{
+			System.out.println("Trying to read number of threads " );
+			int numThreads = Integer.parseInt(getConfigReader().getAProperty(NUM_THREADS));
+			System.out.println("Got " + numThreads + " threads ");
+			return numThreads;
+		}
+		catch(Exception ex)
+		{
+			System.out.println("Could not read " + NUM_THREADS + " which must be an integer.");
+			System.out.println("Defaulting to single thread behavior ");
+			return 1;
+		}
+	}
+	
+	public static boolean writeZippedResults() 
+	{
+		try
+		{
+			String zipString = getConfigReader().getAProperty(WRITE_GZIPPED_RESULTS).toUpperCase();
+
+			if( zipString.equals(TRUE) || zipString.equals(YES))
+				return true;
+			
+		}
+		catch(Exception ex)
+		{
+			return false;
+		}
+		
+		return false;
+	}
+	
 }
 

@@ -7,6 +7,8 @@ import covariance.datacontainers.*;
 
 public class RandomScore implements ScoreGenerator
 {
+	public static final String RANDOM_NAME = "random";
+	
 	Random random = new Random();
 	String idString;
 	private final Alignment a;
@@ -52,7 +54,7 @@ public class RandomScore implements ScoreGenerator
 	
 	public RandomScore()
 	{
-		this("random", null);
+		this(RANDOM_NAME, null);
 	}
 	
 	public RandomScore(String idString, Alignment a)

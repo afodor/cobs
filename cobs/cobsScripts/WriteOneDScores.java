@@ -21,7 +21,7 @@ public class WriteOneDScores
 	public static void main(String[] args) throws Exception
 	{
 		HashMap<String, PfamToPDBBlastResults> pfamToPdbmap = PfamToPDBBlastResults.getAnnotationsAsMap();
-		Semaphore semaphore = new Semaphore(WriteScores.NUM_THREADS);
+		Semaphore semaphore = new Semaphore(ConfigReader.getNumThreads());
 		
 		PfamParser parser = new PfamParser();
 

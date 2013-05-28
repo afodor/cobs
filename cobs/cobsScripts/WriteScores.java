@@ -2,7 +2,9 @@ package cobsScripts;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -10,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.Semaphore;
+import java.util.zip.GZIPOutputStream;
 
 import parsingGrouping.HelixSheetGroup;
 import parsingGrouping.COBS;
@@ -20,6 +23,7 @@ import utils.MapResiduesToIndex;
 import covariance.algorithms.ConservationSum;
 import covariance.algorithms.FileScoreGenerator;
 import covariance.algorithms.MICovariance;
+import covariance.algorithms.McBASCCovariance;
 import covariance.algorithms.PNormalize;
 import covariance.algorithms.RandomScore;
 import covariance.datacontainers.Alignment;
@@ -37,7 +41,6 @@ public class WriteScores
 	public static final int MIN_PDB_LENGTH = 80;
 	public static final double MIN_PERCENT_IDENTITY= 90;
 	public static MaxhomSubstitutionMatrix substitutionMatrix;
-	public static final int NUM_THREADS = 8;
 	
 	static
 	{
@@ -53,25 +56,27 @@ public class WriteScores
 		
 	}
 	
-	private static File getMcBascFileName(Alignment a) throws Exception
+	
+	private static File getOneDFileName(Alignment a, String type) throws Exception
 	{
-		return new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
+		File file =  new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
 				"oneD" + File.separator + 
-				a.getAligmentID() + "_" + "McBASC"+ ".txt");
+				a.getAligmentID() + "_" + type+ ".txt");
+		
+		if( ! file.exists())
+		{
+			file =   new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
+					"oneD" + File.separator + 
+					a.getAligmentID() + "_" + type + ".txt.gz");
+		}
+		
+		return file;
 	}
 	
-
-	private static File getRandomFileName(Alignment a) throws Exception
-	{
-		return new File(ConfigReader.getCleanroom() + File.separator + "results" + File.separator + 
-				"oneD" + File.separator + 
-				a.getAligmentID() + "_" + "random"+ ".txt");
-	}
 	
-	
-	private static FileScoreGenerator getMcBascFSGorNull(Alignment a) throws Exception
+	private static FileScoreGenerator getOneDFileOrNull(Alignment a, String type) throws Exception
 	{
-		File file = getMcBascFileName(a);
+		File file = getOneDFileName(a, type);
 		
 		if (! file.exists())
 		{
@@ -92,28 +97,6 @@ public class WriteScores
 		return fsg;
 	}
 	
-	private static FileScoreGenerator getRandomOrNull(Alignment a) throws Exception
-	{
-		File file = getRandomFileName(a);
-		
-		if (! file.exists())
-		{
-			System.out.println("Could not find " + file.getAbsolutePath());
-			return null;
-			
-		}
-			
-		FileScoreGenerator fsg = new FileScoreGenerator("random", file, a);
-		
-		if( a.getNumColumnsInAlignment() * (a.getNumColumnsInAlignment()-1) / 2 != fsg.getNumScores() )
-		{
-			System.out.println("Truncated " + file.getAbsolutePath());			
-			return null;
-			
-		}
-			
-		return fsg;
-	}
 	
 	public static void main(String[] args) throws Exception
 	{
@@ -121,7 +104,8 @@ public class WriteScores
 		
 		System.out.println(pfamToPdbmap.keySet());
 		
-		Semaphore semaphore = new Semaphore(NUM_THREADS);
+		int numThreads = ConfigReader.getNumThreads();
+		Semaphore semaphore = new Semaphore(numThreads);
 		
 		PfamParser parser = new PfamParser();
 
@@ -136,39 +120,35 @@ public class WriteScores
 			if( toPdb != null && (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= MIN_PDB_LENGTH 
 						&& toPdb.getPercentIdentity() >= MIN_PERCENT_IDENTITY  )
 			{
-				//FileScoreGenerator mcbascFSG = getMcBascFSGorNull(a);
+				FileScoreGenerator mcbascFSG = getOneDFileOrNull(a, McBASCCovariance.MCBASC_ANALYSIS);
 				
-				if(true)//if( mcbascFSG != null)
+				if( mcbascFSG != null)
 				{
 					System.out.println("Starting " + a.getAligmentID());
 					
-					/*
-					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator(mcbascFSG));
 					
 					
-					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, new COBS());
-					*/
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, new COBS());
 					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb,
-						new AverageScoreGenerator(getRandomOrNull(a)));
+						new AverageScoreGenerator(getOneDFileOrNull(a, RandomScore.RANDOM_NAME)));
 					
-					/*
-					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator(new PNormalize(new MICovariance(a))));
 					
-					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator(new MICovariance(a)));											
 					
-					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator(new ConservationSum(a)));
 					
-					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator(new PNormalize(new ConservationSum(a))));
 					
-					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, otherPdb, 
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator( new PNormalize(mcbascFSG)));
-							*/
 				}
 				else
 				{	
@@ -177,12 +157,11 @@ public class WriteScores
 			}
 		}
 		
-		int num = NUM_THREADS;
 		
-		while( num > 0)
+		while( numThreads > 0)
 		{
 			semaphore.acquire();
-			num--;
+			numThreads--;
 		}
 		
 		System.out.println("Finished");
@@ -218,7 +197,8 @@ public class WriteScores
 		directory.mkdirs();
 		
 		return new File( directory.getAbsolutePath() + File.separator + 
-				a.getAligmentID() + "_" + gci.getName() + ".txt");
+				a.getAligmentID() + "_" + gci.getName() + ".txt" + 
+				(ConfigReader.writeZippedResults() ? ".gz" : "")  );
 	}
 	
 	private static class Worker implements Runnable
@@ -242,19 +222,22 @@ public class WriteScores
 			try
 			{
 				PdbFileWrapper fileWrapper = new PdbFileWrapper( new File( ConfigReader.getPdbDir() + File.separator + toPDB.getPdbID() + ".txt"));
+				HashMap<Integer, Integer> pdbToAlignmentNumberMap=  getPdbToAlignmentNumberMap(a, toPDB, fileWrapper);
 				
 				File outputFile = getOutputFile(a, gci);
 				
 				if(outputFile.exists())
 					throw new Exception(outputFile.getAbsolutePath() + " already exists ");
 				
-				BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile));
+				BufferedWriter writer = ConfigReader.writeZippedResults() ? 
+						new BufferedWriter(new OutputStreamWriter( 
+								new GZIPOutputStream( new FileOutputStream( outputFile )))) : 
+						new BufferedWriter(new FileWriter(outputFile));
 				
 				writer.write("region1\tregion2\tcombinedType\tscore\taverageDistance\tminDistance\n");
 				writer.flush();
 				
 				System.out.println(a.getAligmentID());
-				HashMap<Integer, Integer> pdbToAlignmentNumberMap=  getPdbToAlignmentNumberMap(a, toPDB, fileWrapper);
 				List<HelixSheetGroup> helixSheetGroup= 
 						HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPDB.getPdbID() + ".txt",
 								toPDB.getChainId(), toPDB.getQueryStart(), toPDB.getQueryEnd());
@@ -311,12 +294,18 @@ public class WriteScores
 				Date date = new Date();
 				String stringDate = date.toString();
 				System.out.println("Finished " + a.getAligmentID() + "_" + gci.getName() + " at " + stringDate);
-				semaphore.release();
+				
 			}
 			catch(Exception ex)
 			{
 				ex.printStackTrace();
-				System.exit(1);
+				
+				// todo:  Once all the bugs are out put the hard exit back in!
+				//System.exit(1);
+			}
+			finally
+			{
+				semaphore.release();
 			}
 		}
 	}

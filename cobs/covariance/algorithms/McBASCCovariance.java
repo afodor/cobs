@@ -18,6 +18,8 @@ public class McBASCCovariance implements ScoreGenerator
 {	
 	private HashMap<String, Double> cachedVals = new HashMap<String,Double>();
 	
+	public static final String MCBASC_ANALYSIS = "McBASC";
+	
 	private static volatile int[][] maxhomMetric;
 	private static Object maxhomMetricGuard = new Object();
 	
@@ -175,12 +177,9 @@ public class McBASCCovariance implements ScoreGenerator
 		}
 	}
 	
-	/*
-	 * Do not change (as this is hardcoded in other places for file name recognition)
-	 */
 	public String getAnalysisName()
 	{
-		return "McBASC";
+		return MCBASC_ANALYSIS;
 	}
 	
 	public static void main(String[] args) throws Exception
