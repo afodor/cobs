@@ -7,6 +7,11 @@ import junit.framework.TestSuite;
 public class TestSuite1
 {
 
+	/*
+	 * Manually synched with all test cases.  These should all pass
+	 * although TestMcBasc will only pass with a certain probability
+	 * (since our implementation of McBASC covariance is approximate).
+	 */
 	public static Test suite()
 	{
 		TestSuite suite = new TestSuite("Test for covariance.test");
