@@ -1,6 +1,8 @@
 package test;
 
 
+// test comment
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -21,8 +23,8 @@ public class TestSuite1
 		suite.addTest(new TestSuite(AlignmentTest.class));
 		suite.addTest(new TestSuite(EntropyConservationTest.class));
 		suite.addTest(new TestSuite(FactorialsTest.class));
-		suite.addTest(new TestSuite(McBascTest.class));
-		suite.addTest(new TestSuite(MiTest.class));
+		suite.addTest(new TestSuite(TestMcBasc2.class));
+		suite.addTest(new TestSuite(TestMi.class));
 		suite.addTest(new TestSuite(OmesCovarianceTest.class));
 		suite.addTest(new TestSuite(TestCobs.class));
 		suite.addTest(new TestSuite(TestConservationSum.class));
