@@ -85,7 +85,7 @@ public class WriteScores
 			
 		}
 			
-		FileScoreGenerator fsg = new FileScoreGenerator("McBASC", file, a);
+		FileScoreGenerator fsg = new FileScoreGenerator(type, file, a);
 		
 		if( a.getNumColumnsInAlignment() * (a.getNumColumnsInAlignment()-1) / 2 != fsg.getNumScores() )
 		{
