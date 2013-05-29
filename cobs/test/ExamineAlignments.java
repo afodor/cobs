@@ -21,7 +21,6 @@ public class ExamineAlignments
 		HashMap<String, PfamToPDBBlastResults> map = PfamToPDBBlastResults.getAnnotationsAsMap();
 		
 		int numTried =0;
-		int numFailure =0;
 		
 		while( true)
 		{
@@ -31,27 +30,19 @@ public class ExamineAlignments
 			{
 				System.out.println(a.getAligmentID());
 				
-				try
-				{
-					numTried++;
-					PfamToPDBBlastResults toPdb = map.get(a.getAligmentID());
+				numTried++;
+				PfamToPDBBlastResults toPdb = map.get(a.getAligmentID());
 					
-					PdbFileWrapper fileWrapper = new PdbFileWrapper(toPdb.getPdbID());
+				PdbFileWrapper fileWrapper = new PdbFileWrapper(toPdb.getPdbID());
 					
 					HashMap<Integer, Integer> pdbToAlignmentNumberMap=  WriteScores.getPdbToAlignmentNumberMap(a, toPdb, fileWrapper);
 					List<HelixSheetGroup> helixSheetGroup= 
 							HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPdb.getPdbID() + ".txt",
 									toPdb.getChainId(), toPdb.getQueryStart(), toPdb.getQueryEnd());
-				}
-				catch(Exception ex)
-				{
-					ex.printStackTrace();
-					numFailure++;
-				}
 			}
 			else
 			{
-				System.out.println("Finished " + numTried + " "+ numFailure);
+				System.out.println("Finished " + numTried );
 				System.exit(1);
 			}
 			
