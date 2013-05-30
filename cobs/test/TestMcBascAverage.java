@@ -9,8 +9,6 @@ import cobsScripts.AverageScoreGenerator;
 
 import junit.framework.TestCase;
 
-import utils.ConfigReader;
-
 import covariance.algorithms.McBASCCovariance;
 import covariance.datacontainers.Alignment;
 

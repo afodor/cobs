@@ -142,8 +142,10 @@ public class McBASCCovariance implements ScoreGenerator
 	
 	private static void fillMatrixFromFile(int[][] matrix) throws Exception
 	{
+		String runningDirectory = McBASCCovariance.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		
 		BufferedReader reader = new BufferedReader( new FileReader( new File(
-				ConfigReader.getCobsHomeDirectory() + File.separator + "data" + File.separator +
+				runningDirectory + File.separator + "data" + File.separator +
 						"Maxhom_McLachlan.metric" )));
 		
 		String firstLine = reader.readLine();
