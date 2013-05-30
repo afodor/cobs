@@ -32,13 +32,20 @@ public class ExamineAlignments
 				
 				numTried++;
 				PfamToPDBBlastResults toPdb = map.get(a.getAligmentID());
+				
+				try {
+					String pdbInQuestion = toPdb.getPdbID();
 					
-				PdbFileWrapper fileWrapper = new PdbFileWrapper(toPdb.getPdbID());
-					
-					HashMap<Integer, Integer> pdbToAlignmentNumberMap=  WriteScores.getPdbToAlignmentNumberMap(a, toPdb, fileWrapper);
-					List<HelixSheetGroup> helixSheetGroup= 
-							HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPdb.getPdbID() + ".txt",
-									toPdb.getChainId(), toPdb.getQueryStart(), toPdb.getQueryEnd());
+					PdbFileWrapper fileWrapper = new PdbFileWrapper(pdbInQuestion);
+						
+						HashMap<Integer, Integer> pdbToAlignmentNumberMap=  WriteScores.getPdbToAlignmentNumberMap(a, toPdb, fileWrapper);
+						List<HelixSheetGroup> helixSheetGroup= 
+								HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPdb.getPdbID() + ".txt",
+										toPdb.getChainId(), toPdb.getQueryStart(), toPdb.getQueryEnd());
+				} catch (NullPointerException e) {
+					// TODO Auto-generated catch block
+					System.err.println("We seemed to have an issue parsing for a particular PDB on this family, skipping");
+				}
 			}
 			else
 			{
