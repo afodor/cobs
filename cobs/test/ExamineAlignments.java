@@ -62,7 +62,9 @@ public class ExamineAlignments
 										toPdb.getChainId(), toPdb.getQueryStart(), toPdb.getQueryEnd());
 				} catch (NullPointerException e) {
 					// TODO Auto-generated catch block
+					e.printStackTrace();
 					System.err.println("We seemed to have an issue parsing for a particular PDB on this family, skipping");
+					System.exit(1);
 				}
 			}
 			else
