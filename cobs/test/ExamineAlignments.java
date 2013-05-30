@@ -2,6 +2,7 @@ package test;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import cobsScripts.WriteScores;
@@ -20,6 +21,13 @@ public class ExamineAlignments
 		PfamParser parser = new PfamParser();
 		HashMap<String, PfamToPDBBlastResults> map = PfamToPDBBlastResults.getAnnotationsAsMap();
 		
+		HashSet<String> usefulPFAMs = new HashSet<String>();
+		
+		//Now to create a useful set to lookup
+		for (String pfamsWeCareAbout : map.keySet()){
+			usefulPFAMs.add(pfamsWeCareAbout.toLowerCase());
+		}
+		
 		int numTried =0;
 		
 		while( true)
@@ -28,8 +36,18 @@ public class ExamineAlignments
 			
 			if( ! parser.isFinished())
 			{
-				System.out.println(a.getAligmentID());
+				String pFamGiantFileAlignmentID = a.getAligmentID().toLowerCase();
 				
+				
+				//Here we check if it is worth our time continuing.  Basically, if this isn't on our list of ~800 or so PFAM families
+				//Move along, move along
+				if (!usefulPFAMs.contains(pFamGiantFileAlignmentID)){
+					continue;
+				}
+				else{
+					System.out.println(pFamGiantFileAlignmentID + " was found to be a match, we will process.");
+				}
+					
 				numTried++;
 				PfamToPDBBlastResults toPdb = map.get(a.getAligmentID());
 				
