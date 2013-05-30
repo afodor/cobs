@@ -19,13 +19,14 @@ public class AbsoluteScoreVsAverageDistance
 		double listSize;
 	}
 	
-	public static final String[]  FILE_NAMES = {"random_PNormalInitial",
+	public static final String[]  FILE_NAMES = {"AverageMcBASC_PNormalInitial", 
+		"AverageMcBASC", 
+		"COBS_UNCORRECTED",
+		"random_PNormalInitial",
 		"AverageConservationSum_PNormalInitial",
 		"AverageConservationSum",
-		"AverageMcBASC",  
 		"AverageMI_PNormalInitial",
-		"AverageMI", 
-		"COBS_UNCORRECTED"
+		"AverageMI"
 		};
 		
 	public static void main(String[] args) throws Exception

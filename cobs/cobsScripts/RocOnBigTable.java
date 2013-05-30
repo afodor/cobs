@@ -5,6 +5,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.StringTokenizer;
+
+import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Annotated;
 
 import utils.ConfigReader;
 
@@ -22,6 +25,30 @@ public class RocOnBigTable
 				writeROC(s, false);
 			}
 				
+		}
+		
+		/*"AverageMcBASC_PNormalInitial", 
+		"AverageMcBASC", 
+		"COBS_UNCORRECTED",
+		"random_PNormalInitial",
+		"AverageConservationSum_PNormalInitial",
+		"AverageConservationSum",
+		"AverageMI_PNormalInitial",
+		"AverageMI"
+		 * 
+		 */
+		private static String annotateColumn(String fileSubString,boolean normalized)
+		{
+			StringTokenizer sToken = new StringTokenizer(fileSubString, "_");
+			
+			String firstToken = sToken.nextToken();
+			
+			String suffix = normalized ? "late" : "";
+			
+			if( ! sToken.hasMoreTokens())
+				return firstToken + "_" + suffix;
+			
+			return firstToken + "_" +  sToken.nextToken().replace("PNormalInitial", "early") + "_" + suffix;
 		}
 		
 		public static void writeROC(String fileSubString, boolean normalized) throws Exception
@@ -45,10 +72,10 @@ public class RocOnBigTable
 			int numBelow50=0;
 			int numAbove50=0;
 			
-			writer.write( fileSubString +  "_prediction\t" + 
-						fileSubString +  "_numBelow50\t" + 
-						fileSubString +	"_numAbove50\n");
-								
+			String prefix = annotateColumn(fileSubString, normalized);
+			writer.write( prefix +  "_prediction\t" + 
+						prefix +  "_numBelow50\t" + 
+						prefix +	"_numAbove50\n");
 			
 			reader.readLine();
 			
