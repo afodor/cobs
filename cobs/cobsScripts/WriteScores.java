@@ -85,7 +85,7 @@ public class WriteScores
 			
 		}
 			
-		FileScoreGenerator fsg = new FileScoreGenerator("McBASC", file, a);
+		FileScoreGenerator fsg = new FileScoreGenerator(type, file, a);
 		
 		if( a.getNumColumnsInAlignment() * (a.getNumColumnsInAlignment()-1) / 2 != fsg.getNumScores() )
 		{
@@ -427,6 +427,11 @@ public class WriteScores
 				ungappedPfamToGappedPfamMap.put(ungappedPosition, x);
 			}
 		}
+		
+		System.out.println(toPDB.getPdbID()+ " " + toPDB.getChainId() + " " + toPDB.getQueryStart() + " " + toPDB.getQueryEnd());
+		System.out.println(fileWrapper.getChain(toPDB.getChainId()).getSequence());
+		System.out.println(fileWrapper.getChain(toPDB.getChainId()).getSequence().length());
+		
 		
 		String pdbSeq = fileWrapper.getChain(toPDB.getChainId()).getSequence().substring(toPDB.getQueryStart()-1,
 																		toPDB.getQueryEnd());

@@ -12,7 +12,7 @@ import utils.MapResiduesToIndex;
 
 import junit.framework.TestCase;
 
-public class MiTest extends TestCase
+public class TestMi extends TestCase
 {
 
 	public void testDistro1() throws Exception
@@ -190,7 +190,7 @@ public class MiTest extends TestCase
 		assertEquals(mi.getScore(a, 2,1), 0.620686859, 0.001);	
 	}
 
-	public MiTest(String arg0)
+	public TestMi(String arg0)
 	{
 		super(arg0);
 	}

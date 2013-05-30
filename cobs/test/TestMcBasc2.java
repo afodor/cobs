@@ -11,10 +11,10 @@ import utils.TTest;
 
 import junit.framework.TestCase;
 
-public class McBascTest extends TestCase
+public class TestMcBasc2 extends TestCase
 {
 
-	public McBascTest(String arg0)
+	public TestMcBasc2(String arg0)
 	{
 		super(arg0);
 	}
