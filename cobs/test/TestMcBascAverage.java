@@ -20,8 +20,9 @@ public class TestMcBascAverage extends TestCase
 	{
 		Random random = new Random();
 
-		Alignment a = new Alignment("1", new File( ConfigReader.getCobsHomeDirectory() + File.separator + 
-				"pnase.txt"), true );
+		String runningDirectory = TestConservationSumAverage.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		System.out.println(runningDirectory);
+		Alignment a = new Alignment("1", new File(runningDirectory + "pnase.txt"), true );
 		a = a.getFilteredAlignment(90);
 		
 		McBASCCovariance mcBasc  = new McBASCCovariance(a);

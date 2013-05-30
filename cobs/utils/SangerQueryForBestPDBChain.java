@@ -36,6 +36,8 @@ public class SangerQueryForBestPDBChain {
 	 * This is what we will use INTERNALLY to look at the concatenation of an input of PFAM and PDB
 	 */
 	private HashMap<String, List<SangerPDBpfamMappingSingleLine>>  sangerByPFAM = new HashMap<String, List<SangerPDBpfamMappingSingleLine>>();
+	private Integer succinctPDBStart;
+	private Integer succinctPDBStop;
 	/**
 	 * @param sanger
 	 * @throws IOException 
@@ -135,6 +137,8 @@ public Character getSuccinctAnswer (){
 		}
 		
 		if (answer.size() == 1){
+			this.succinctPDBStart = answer.get(0).getPdbResNumStart();
+			this.succinctPDBStop = answer.get(0).getPdbResNumEnd();
 			return answer.get(0).getChainID();
 		}
 		
@@ -150,9 +154,19 @@ public Character getSuccinctAnswer (){
 				}
 			}
 		}
+		this.succinctPDBStart = winner.getPdbResNumStart();
+		this.succinctPDBStop = winner.getPdbResNumEnd();
 		return winner.getChainID();
 		
 	}
+
+	public Integer getSuccinctPDBStart() {
+	return this.succinctPDBStart;
+}
+
+public Integer getSuccinctPDBStop() {
+	return this.succinctPDBStop;
+}
 
 	public String getPdb() {
 		return pdb;

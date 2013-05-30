@@ -54,9 +54,9 @@ public class BestAlignmentResultAppendToNewFile {
 			targetScript.write("\t");
 			targetScript.write(x.getqStop());
 			targetScript.write("\t");
-			targetScript.write(x.gettStart());
+			targetScript.write(q.getSuccinctPDBStart().toString());
 			targetScript.write("\t");
-			targetScript.write(x.gettEnd());
+			targetScript.write(q.getSuccinctPDBStop().toString());
 			targetScript.write("\t");
 			targetScript.write(x.getPercentIdentity() + "\t");
 			targetScript.write(answer + "\n");
