@@ -7,8 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.StringTokenizer;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Annotated;
-
 import utils.ConfigReader;
 
 

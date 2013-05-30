@@ -20,6 +20,7 @@ import parsingGrouping.COBS;
 import utils.ConfigReader;
 import utils.MapResiduesToIndex;
 
+import covariance.algorithms.AbsoluteValueFileScoreGenerator;
 import covariance.algorithms.ConservationSum;
 import covariance.algorithms.FileScoreGenerator;
 import covariance.algorithms.MICovariance;
@@ -97,6 +98,31 @@ public class WriteScores
 		return fsg;
 	}
 	
+
+	private static AbsoluteValueFileScoreGenerator  getAbsoluteOneDFileOrNull(
+			Alignment a, String type) throws Exception
+	{
+		File file = getOneDFileName(a, type);
+		
+		if (! file.exists())
+		{
+			System.out.println("Could not find " + file.getAbsolutePath());
+			return null;
+			
+		}
+			
+		AbsoluteValueFileScoreGenerator fsg = new AbsoluteValueFileScoreGenerator(type, file, a);
+		
+		if( a.getNumColumnsInAlignment() * (a.getNumColumnsInAlignment()-1) / 2 != fsg.getNumScores() )
+		{
+			System.out.println("Truncated " + file.getAbsolutePath());			
+			return null;
+			
+		}
+			
+		return fsg;
+	}
+	
 	
 	public static void main(String[] args) throws Exception
 	{
@@ -148,6 +174,13 @@ public class WriteScores
 					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator( new PNormalize(mcbascFSG)));
+							
+					// check to see if taking the absolute value of McBASC makes a difference
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
+							new AverageScoreGenerator( getAbsoluteOneDFileOrNull(a, McBASCCovariance.MCBASC_ANALYSIS)));
+					
+					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
+							new AverageScoreGenerator( new PNormalize(getAbsoluteOneDFileOrNull(a, McBASCCovariance.MCBASC_ANALYSIS))));
 				}
 				else
 				{	

@@ -19,7 +19,10 @@ public class AbsoluteScoreVsAverageDistance
 		double listSize;
 	}
 	
-	public static final String[]  FILE_NAMES = {"AverageMcBASC_PNormalInitial", 
+	public static final String[]  FILE_NAMES = {
+		"AverageAbsMcBASC",
+		"AverageAbsMcBASC_PNormalInitial",
+		"AverageMcBASC_PNormalInitial", 
 		"AverageMcBASC", 
 		"COBS_UNCORRECTED",
 		"random_PNormalInitial",
@@ -88,6 +91,7 @@ public class AbsoluteScoreVsAverageDistance
 		File dataDir = new File(ConfigReader.getCleanroom() + File.separator + "results");
 		String[] files = dataDir.list();
 
+		int numDone =0;
 		for(String s : files)
 		{	
 			if(s.contains(fileSubString + "."))
@@ -108,7 +112,7 @@ public class AbsoluteScoreVsAverageDistance
 					ListData ld = new ListData();
 					ld.listSize = innerList.size();
 					ld.medianDistance = ResultsFileLine.getMedianAverageDistance(innerList);
-					
+					numDone++;
 				
 					// list is sorted by call to getMedianAverageDistance(...)
 					for(int x=0;x  < innerList.size(); x++)
@@ -128,6 +132,7 @@ public class AbsoluteScoreVsAverageDistance
 				}	
 			}
 		}
+		System.out.println("GOT  " + numDone);
 		
 		return bigList;
 	}
