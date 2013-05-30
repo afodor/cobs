@@ -3,6 +3,8 @@ package covariance.parsers;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -176,6 +178,48 @@ public class PfamToPDBBlastResults
 	
 	public static void main(String[] args) throws Exception
 	{
-		getAnnotations();
+		List<PfamToPDBBlastResults> theAnnotations = getAnnotations();
+		//Now to prove we are actually reading this information
+		for (PfamToPDBBlastResults x : theAnnotations){
+			System.out.println(x);
+		}
+	}
+	
+	@Override
+	public String toString() {
+	    java.lang.reflect.Field[] fields = getClass().getDeclaredFields();
+	    AccessibleObject.setAccessible(fields,true);
+
+	    StringBuffer sb = new StringBuffer();
+	    sb.append("Class: " + this.getClass().getName() + "\n");
+
+	    for (java.lang.reflect.Field field : fields) {
+	        Object value = null;
+	        try {
+	            value = field.get(this);
+	        } catch (IllegalAccessException e) {continue;}
+
+	        sb.append("\tField \"" + field.getName() + "\"\n");
+
+	        Class fieldType = field.getType();
+	        sb.append("\t\tType:  ");
+
+	        if (fieldType.isArray()) {
+	            Class subType = fieldType.getComponentType();
+	            int length = Array.getLength(value);
+	            sb.append(subType.getName() + "[" + length + "]" + "\n");
+
+	            for (int i = 0; i < length; i ++) {
+	                Object obj = Array.get(value,i);
+	                sb.append("\t\tValue " + i + ":  " + obj + "\n");
+	            }
+	        } else {
+	            sb.append(fieldType.getName() + "\n");
+	            sb.append("\t\tValue: ");
+	            sb.append((value == null) ? "NULL" : value.toString());
+	            sb.append("\n");
+	        }
+	    }
+	    return sb.toString();
 	}
 }
