@@ -1,4 +1,4 @@
-package cobsScripts;
+package gocAlgorithms;
 
 
 import covariance.datacontainers.Alignment;

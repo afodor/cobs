@@ -1,5 +1,10 @@
 package cobsScripts;
 
+import gocAlgorithms.AverageScoreGenerator;
+import gocAlgorithms.COBS;
+import gocAlgorithms.GroupOfColumnsInterface;
+import gocAlgorithms.HelixSheetGroup;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,8 +19,6 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.zip.GZIPOutputStream;
 
-import parsingGrouping.HelixSheetGroup;
-import parsingGrouping.COBS;
 
 import utils.ConfigReader;
 import utils.MapResiduesToIndex;

@@ -31,6 +31,8 @@ public class TestSuite1
 		suite.addTest(new TestSuite(TestConservationSumAverage.class));
 		suite.addTest(new TestSuite(TestMcBasc.class));
 		suite.addTest(new TestSuite(TestMcBascAverage.class));
+		suite.addTest(new TestSuite(OmesCovarianceTest.class));
+		suite.addTest(new TestSuite(FactorialsTest.class));
 		//$JUnit-END$
 		return suite;
 	}

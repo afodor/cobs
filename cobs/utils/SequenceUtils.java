@@ -10,11 +10,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import covariance.datacontainers.Alignment;
 import covariance.datacontainers.PdbChain;
 import covariance.datacontainers.PdbFileWrapper;
 import covariance.datacontainers.PdbResidue;
-import covariance.parsers.ClustalAlignment;
 import covariance.parsers.PFamPdbAnnotationParser;
 
 public class SequenceUtils
@@ -44,19 +42,6 @@ public class SequenceUtils
 	// static access only
 	private SequenceUtils()
 	{
-	}
-	
-	public static void main(String[] args) throws Exception
-	{
-		for ( int x=0; x< MapResiduesToIndex.NUM_VALID_RESIDUES; x++ ) 
-		{
-			System.out.println( MapResiduesToIndex.getChar(x) + " " + getMaxSurfaceArea(x) );
-		}
-	}
-	
-	public static float getMaxSurfaceArea(int index)
-	{
-		return maxSurfaceAreas[index];	
 	}
 	
 	public static boolean isHydrophicChar( char inChar ) 
@@ -90,8 +75,7 @@ public class SequenceUtils
 	}
 	
 	public static String buildFasta(String sequence1, String sequence2 ) 
-	{
-		StringBuffer buff = new StringBuffer();
+	{		StringBuffer buff = new StringBuffer();
 		
 		buff.append(">1\n");
 		buff.append( sequence1 + "\n" );
@@ -100,51 +84,6 @@ public class SequenceUtils
 		
 		
 		return buff.toString();	
-	}
-	
-	public static PFamPdbAnnotationParser getBestMatchToPdbs(Alignment a, String sequence) throws Exception
-	{
-		float highestPercentage = -10000;
-		PFamPdbAnnotationParser bestHit = null;
-		
-		for ( int x=0; x< a.getAnnotationParsers().length; x++ )
-		{
-		
-			String pdbPath = ConfigReader.getPdbDir() + File.separator + 
-								a.getAnnotationParsers()[x].getFourCharId();
-			
-			PdbFileWrapper pdbFileWrapper = null;
-			
-			try
-			{
-				System.out.println("Trying " + a.getAnnotationParsers()[x].getFourCharId());
-				pdbFileWrapper = new PdbFileWrapper(a.getAnnotationParsers()[x].getFourCharId());
-			} 
-			catch(Exception e)
-			{
-				System.out.println("Could not parse " + a.getAnnotationParsers()[x].getFourCharId() );
-			}
-			
-			if ( pdbFileWrapper != null )
-			{
-			
-				String pdbFragment = SequenceUtils.getPdbStringFragment( a.getAnnotationParsers()[x], pdbFileWrapper );
-				ClustalAlignment cAlingment = 
-						ClustalWrapper.getClustalAlignment(SequenceUtils.buildFasta(sequence, pdbFragment));
-				
-				float pairwiseIdentity = cAlingment.getPairwiseIdentity(0,1);
-									
-				if (  pairwiseIdentity > highestPercentage ) 
-				{
-					highestPercentage = pairwiseIdentity ;
-					bestHit = a.getAnnotationParsers()[x];
-					System.out.println("Setting highest to " + pairwiseIdentity );
-				}
-				
-			}
-		}
-		
-		return bestHit;
 	}
 	
 	public static String fileToString( File file ) throws Exception

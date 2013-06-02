@@ -1,5 +1,7 @@
 package test;
 
+import gocAlgorithms.HelixSheetGroup;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,7 +9,6 @@ import java.util.List;
 
 import cobsScripts.WriteScores;
 
-import parsingGrouping.HelixSheetGroup;
 import utils.ConfigReader;
 import covariance.datacontainers.Alignment;
 import covariance.datacontainers.PdbFileWrapper;

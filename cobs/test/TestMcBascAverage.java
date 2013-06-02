@@ -1,10 +1,11 @@
 package test;
 
+import gocAlgorithms.AverageMcBASC;
+import gocAlgorithms.AverageScoreGenerator;
+
 import java.io.File;
 import java.util.Random;
 
-import cobsScripts.AverageMcBASC;
-import cobsScripts.AverageScoreGenerator;
 
 
 import junit.framework.TestCase;

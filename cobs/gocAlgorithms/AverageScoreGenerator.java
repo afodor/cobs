@@ -1,37 +1,40 @@
-package cobsScripts;
+package gocAlgorithms;
+
 
 import java.util.HashMap;
 
-import covariance.algorithms.McBASCCovariance;
+
+import covariance.algorithms.ScoreGenerator;
 import covariance.datacontainers.Alignment;
 
-public class AverageMcBASC implements GroupOfColumnsInterface
+public class AverageScoreGenerator implements GroupOfColumnsInterface
 {
-	private final McBASCCovariance mcBasc;
+	private final ScoreGenerator sg;
 	private final HashMap<String, Double> cachedMap = new HashMap<String, Double>();
-	private final Alignment a;
 	
-	public AverageMcBASC(Alignment a) throws Exception
+	public AverageScoreGenerator(ScoreGenerator sg) throws Exception
 	{
-		this.a = a;
-		mcBasc = new McBASCCovariance(a);
+		this.sg = sg;
 	}
 	
 	@Override
 	public String getName()
 	{
-		return "AverageMcBASC";
+		return "Average" + sg.getAnalysisName();
 	}
 	
 	@Override
 	/*
-	 * Not thread safe.  Ignores columns with noScore..
+	 * Not thread safe.
 	 */
 	public double getScore(Alignment alignment, int leftPosStart,
 			int leftPosEnd, int rightPosStart, int rightPosEnd)
 			throws Exception
 	{
-		if( a != alignment)
+		//System.out.println("CHECKING " + alignment.getAligmentID() + " " + 
+		//leftPosStart + " " + leftPosEnd + " " + rightPosStart + " " + rightPosEnd);
+		
+		if( alignment != sg.getAlignment())
 			throw new Exception("NO");
 		
 		double sum =0;
@@ -47,20 +50,18 @@ public class AverageMcBASC implements GroupOfColumnsInterface
 				
 				if( score == null)
 				{
-					score = mcBasc.getScore(alignment, x, y);
-					cachedMap.put(key, score);
+					if( x== y)
+						System.out.println("Querying " + x + " " + y);
+					
+					
+					score = sg.getScore(alignment, x, y);
 				}
 				
-				if( score != mcBasc.NO_SCORE && ! Double.isInfinite(score) && ! Double.isNaN(score))
-				{
-					sum += score;
-					n++;
-				}
+				cachedMap.put(key, score);
+				sum += score;
+				n++;
 			}
 		}
-		
-		if( Double.isInfinite(sum) || Double.isNaN(sum) || n==0)
-			return mcBasc.NO_SCORE;
 		
 		return sum / n;
 	}

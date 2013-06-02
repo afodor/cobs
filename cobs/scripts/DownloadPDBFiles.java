@@ -1,9 +1,8 @@
-package parsingGrouping;
+package scripts;
 
 import java.util.HashMap;
 
 
-import scripts.PdbDownloadFromHTTP;
 
 import covariance.datacontainers.Alignment;
 import covariance.parsers.PfamParser;

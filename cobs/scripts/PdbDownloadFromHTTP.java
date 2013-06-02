@@ -27,6 +27,8 @@ public class PdbDownloadFromHTTP
 			downloadIfNotThere(pdbID);
 			
 		}
+		
+		reader.close();
 	}
 	
 	public static void downloadIfNotThere(String fourChar) throws Exception

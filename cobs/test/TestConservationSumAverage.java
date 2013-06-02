@@ -1,9 +1,10 @@
 package test;
 
+import gocAlgorithms.AverageScoreGenerator;
+
 import java.io.File;
 import java.util.Random;
 
-import cobsScripts.AverageScoreGenerator;
 
 import junit.framework.TestCase;
 

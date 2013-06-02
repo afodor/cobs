@@ -1,10 +1,11 @@
 package test;
 
+import gocAlgorithms.COBS;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import parsingGrouping.COBS;
 
 import utils.MapResiduesToIndex;
 import utils.Pearson;
