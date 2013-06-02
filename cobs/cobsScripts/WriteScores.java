@@ -464,7 +464,7 @@ public class WriteScores
 			}
 		}
 		
-		System.out.println(toPDB.getPdbID()+ " " + toPDB.getChainId() + " " 
+		System.out.println(toPDB.getPdbID()+ " " + toPDB.getChainId() + "  " 
 					+ toPDB.getPdbStart() + " "+ toPDB.getPdbEnd());
 		System.out.println(fileWrapper.getChain(toPDB.getChainId()).getSequence());
 		System.out.println(fileWrapper.getChain(toPDB.getChainId()).getSequence().length());
