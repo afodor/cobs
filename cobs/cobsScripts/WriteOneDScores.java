@@ -10,7 +10,6 @@ import java.util.concurrent.Semaphore;
 import utils.ConfigReader;
 import covariance.algorithms.FileScoreGenerator;
 import covariance.algorithms.McBASCCovariance;
-import covariance.algorithms.RandomScore;
 import covariance.algorithms.ScoreGenerator;
 import covariance.datacontainers.Alignment;
 import covariance.parsers.PfamParser;
@@ -20,7 +19,10 @@ public class WriteOneDScores
 {
 	public static void main(String[] args) throws Exception
 	{
-		HashMap<String, PfamToPDBBlastResults> pfamToPdbmap = PfamToPDBBlastResults.getAnnotationsAsMap();
+		HashMap<String, PfamToPDBBlastResults> map = PfamToPDBBlastResults.getAsMap();
+		
+		System.out.println(map.keySet());
+		
 		Semaphore semaphore = new Semaphore(ConfigReader.getNumThreads());
 		
 		PfamParser parser = new PfamParser();
@@ -29,15 +31,16 @@ public class WriteOneDScores
 					a != null;
 						a = parser.getNextAlignment())
 		{
-			PfamToPDBBlastResults toPdb = pfamToPdbmap.get(a.getAligmentID());
+			System.out.println("Trying  " + a.getAligmentID());
 			
-			if( toPdb != null &&  (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= WriteScores.MIN_PDB_LENGTH 
-					&& toPdb.getPercentIdentity() >= WriteScores.MIN_PERCENT_IDENTITY  )
+			PfamToPDBBlastResults toPdb = map.get(a.getAligmentID());
+			
+			if( toPdb != null)
 			{
-				// McBASC is all we really need to cache; the other algorithsm are fast
+				// McBASC is all we really need to cache; the other algorithms are fast enough
 				//kickOneOffIfFileDoesNotExist(semaphore, a, new ConservationSum(a));
 				//kickOneOffIfFileDoesNotExist(semaphore, a, new MICovariance(a));
-				kickOneOffIfFileDoesNotExist(semaphore, a, new RandomScore());
+				//kickOneOffIfFileDoesNotExist(semaphore, a, new RandomScore());
 				
 				kickOneOffIfFileDoesNotExist(semaphore, a, new McBASCCovariance(a));
 			}
@@ -50,6 +53,7 @@ public class WriteOneDScores
 	private static synchronized void kickOneOffIfFileDoesNotExist(Semaphore semaphore, Alignment a, 
 			ScoreGenerator sg) throws Exception
 	{
+		System.out.println("Trying " + a.getAligmentID());
 		File outFile = getOutputFile(a, sg);
 		
 		

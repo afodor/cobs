@@ -37,10 +37,14 @@ public class PdbDownloadFromHTTP
 				fourChar + ".txt");
 		
 		if(pdbFile.exists())
+		{
+			System.out.println(pdbFile.getAbsolutePath() + " exists!");
 			return;
-		
+			
+		}
+			
 		URL url = new URL( "http://www.rcsb.org/pdb/files/" + fourChar + ".pdb.gz");
-		
+		System.out.println(url.toString());
 		BufferedReader reader = 
 		new BufferedReader(new InputStreamReader( 
 				new GZIPInputStream( url.openStream())));

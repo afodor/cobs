@@ -13,6 +13,8 @@ import java.util.zip.GZIPInputStream;
 
 import covariance.parsers.PfamToPDBBlastResults;
 
+
+
 import utils.ConfigReader;
 
 public class WriteTruncatedPfamAlignments
@@ -27,11 +29,9 @@ public class WriteTruncatedPfamAlignments
 						new GZIPInputStream( new FileInputStream( ConfigReader.getFullPfamPath()) ) ),100000)
 				: new BufferedReader( new FileReader( new File( ConfigReader.getFullPfamPath())),100000);	
 			
-		HashMap<String, PfamToPDBBlastResults> pdbMap = 
-				PfamToPDBBlastResults.getAnnotationsAsMap();
-		
-		File outFile = new File( ConfigReader.getCobsHomeDirectory()+
-				File.separator + "pfamTruncated.txt");
+		HashMap<String, PfamToPDBBlastResults> pdbMap= PfamToPDBBlastResults.getAsMap();
+			
+		File outFile = new File("c:\\temp\\pfamTruncated.txt");
 		
 		System.out.println(outFile.getAbsolutePath());
 		

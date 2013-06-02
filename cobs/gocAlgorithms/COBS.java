@@ -147,4 +147,9 @@ public class COBS implements GroupOfColumnsInterface
 
 		return Pearson.getPearsonR(list1, list2);
 					}
+	
+	public static void main(String[] args)
+	{
+		
+	}
 }

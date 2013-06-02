@@ -1,5 +1,6 @@
 package gocAlgorithms;
 
+
 import covariance.datacontainers.Alignment;
 
 public interface GroupOfColumnsInterface
@@ -8,5 +9,4 @@ public interface GroupOfColumnsInterface
 		throws Exception;
 	
 	public String getName();
-	
 }

@@ -43,7 +43,6 @@ import dynamicProgramming.PairedAlignment;
 public class WriteScores
 {
 	public static final int MIN_PDB_LENGTH = 80;
-	public static final double MIN_PERCENT_IDENTITY= 90;
 	public static MaxhomSubstitutionMatrix substitutionMatrix;
 	
 	static
@@ -129,7 +128,7 @@ public class WriteScores
 	
 	public static void main(String[] args) throws Exception
 	{
-		HashMap<String, PfamToPDBBlastResults> pfamToPdbmap = PfamToPDBBlastResults.getAnnotationsAsMap();
+		HashMap<String, PfamToPDBBlastResults> pfamToPdbmap = PfamToPDBBlastResults.getAsMap();
 		
 		System.out.println(pfamToPdbmap.keySet());
 		
@@ -146,8 +145,7 @@ public class WriteScores
 			
 			System.out.println("Trying " + a.getAligmentID());
 			
-			if( toPdb != null && (toPdb.getQueryEnd() - toPdb.getQueryStart()) >= MIN_PDB_LENGTH 
-						&& toPdb.getPercentIdentity() >= MIN_PERCENT_IDENTITY  )
+			if( toPdb != null   )
 			{
 				FileScoreGenerator mcbascFSG = getOneDFileOrNull(a, McBASCCovariance.MCBASC_ANALYSIS);
 				
@@ -161,7 +159,7 @@ public class WriteScores
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, new COBS());
 					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb,
-						new AverageScoreGenerator(getOneDFileOrNull(a, RandomScore.RANDOM_NAME)));
+						new AverageScoreGenerator(new RandomScore("random",a)));
 					
 					kickOneOffIfFileDoesNotExist(semaphore, a, toPdb, 
 							new AverageScoreGenerator(new PNormalize(new MICovariance(a))));
@@ -206,7 +204,8 @@ public class WriteScores
 	/*
 	 * The syncrhonized is just to force all threads to the most up-to-date view of the data
 	 */
-	private static synchronized void kickOneOffIfFileDoesNotExist(Semaphore semaphore, Alignment a, PfamToPDBBlastResults toPdb, 
+	private static synchronized void kickOneOffIfFileDoesNotExist(Semaphore semaphore, Alignment a, 
+			PfamToPDBBlastResults toPdb, 
 			GroupOfColumnsInterface gci) throws Exception
 	{
 		File outFile = getOutputFile(a, gci);
@@ -275,7 +274,7 @@ public class WriteScores
 				System.out.println(a.getAligmentID());
 				List<HelixSheetGroup> helixSheetGroup= 
 						HelixSheetGroup.getList(ConfigReader.getPdbDir() + File.separator + toPDB.getPdbID() + ".txt",
-								toPDB.getChainId(), toPDB.getQueryStart(), toPDB.getQueryEnd());
+								toPDB.getChainId(), toPDB.getPdbStart(), toPDB.getPdbEnd());
 				System.out.println(helixSheetGroup);
 				
 				for(HelixSheetGroup hsg : helixSheetGroup)
@@ -440,11 +439,12 @@ public class WriteScores
 		return numMatch / num;
 	}
 	
-	public static HashMap<Integer, Integer> getPdbToAlignmentNumberMap( Alignment a, PfamToPDBBlastResults toPDB,
+	public static HashMap<Integer, Integer> getPdbToAlignmentNumberMap( Alignment a, 
+			PfamToPDBBlastResults toPDB,
 			 PdbFileWrapper fileWrapper) throws Exception
 	{
 		HashMap<Integer, Integer> map = new LinkedHashMap<Integer, Integer>();
-		AlignmentLine aLine = a.getAnAlignmentLine(toPDB.getPfamLine());
+		AlignmentLine aLine = a.getAnAlignmentLine(  toPDB.getPfamLine() );
 		String pFamSeq = aLine.getSequence().toUpperCase();
 		
 		HashMap<Integer, Integer> ungappedPfamToGappedPfamMap = new LinkedHashMap<>();
@@ -464,13 +464,14 @@ public class WriteScores
 			}
 		}
 		
-		System.out.println(toPDB.getPdbID()+ " " + toPDB.getChainId() + " " + toPDB.getQueryStart() + " " + toPDB.getQueryEnd());
+		System.out.println(toPDB.getPdbID()+ " " + toPDB.getChainId() + " " 
+					+ toPDB.getPdbStart() + " "+ toPDB.getPdbEnd());
 		System.out.println(fileWrapper.getChain(toPDB.getChainId()).getSequence());
 		System.out.println(fileWrapper.getChain(toPDB.getChainId()).getSequence().length());
 		
 		
-		String pdbSeq = fileWrapper.getChain(toPDB.getChainId()).getSequence().substring(toPDB.getQueryStart()-1,
-																		toPDB.getQueryEnd());
+		String pdbSeq = fileWrapper.getChain(toPDB.getChainId()).getSequence().substring(toPDB.getPdbStart()-1,
+																		toPDB.getPdbEnd());
 		
 		pdbSeq = pdbSeq.toUpperCase();
 		
@@ -478,8 +479,8 @@ public class WriteScores
 				NeedlemanWunsch.globalAlignTwoSequences(
 						pdbSeq, ungappedPfam.toString(), substitutionMatrix, -3, 0, false);
 		
-		//System.out.println(pa.getFirstSequence());
-		//System.out.println(pa.getSecondSequence());
+		System.out.println(pa.getFirstSequence());
+		System.out.println(pa.getSecondSequence());
 		
 		double fractionMatch = getFractionIdentity(pa.getFirstSequence(), pa.getSecondSequence());
 		
@@ -493,9 +494,9 @@ public class WriteScores
 			
 		int x=-1;
 		int alignmentPos =-1;
-		int pdbNumber = toPDB.getQueryStart() -1;
+		int pdbNumber = toPDB.getPdbStart() -1;
 		
-		while(pdbNumber < toPDB.getQueryEnd())
+		while(pdbNumber < toPDB.getPdbEnd())
 		{
 			x++;
 			
@@ -516,7 +517,7 @@ public class WriteScores
 		for(Integer pdbNum : map.keySet())
 		{
 			num++;
-			char pdbChar = pdbSeq.charAt(pdbNum- toPDB.getQueryStart());
+			char pdbChar = pdbSeq.charAt(pdbNum- toPDB.getPdbStart());
 			char pfamChar = pFamSeq.charAt(map.get(pdbNum));
 			
 			if( pdbChar == pfamChar)
