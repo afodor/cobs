@@ -87,7 +87,7 @@ public class TestMcBasc extends TestCase
 	public void testAgainstReimplementation(  ) throws Exception
 	{
 		int[][] metric = McBASCCovariance.getMaxhomMetric();
-		List<AlignmentLine> list = new ArrayList<>();
+		List<AlignmentLine> list = new ArrayList<AlignmentLine>();
 		
 		for( int x=0; x < 100; x++)
 			list.add(new AlignmentLine("" +  x, TestCobs.getRandomProtein(2)));
@@ -113,8 +113,8 @@ public class TestMcBasc extends TestCase
 		if( s1.length() != s2.length())
 			throw new Exception("No");
 		
-		List<Double> listI = new ArrayList<>();
-		List<Double> listJ = new ArrayList<>();
+		List<Double> listI = new ArrayList<Double>();
+		List<Double> listJ = new ArrayList<Double>();
 		
 		for( int k=0; k < s1.length()-1; k++)
 		{

@@ -29,7 +29,7 @@ public class TestConservationSum extends TestCase
 		
 		String sReversed = new StringBuffer(s).reverse().toString();
 		
-		List<Character> list = new ArrayList<>();
+		List<Character> list = new ArrayList<Character>();
 		
 		for( Character c : sReversed.toCharArray())
 			list.add(c);
