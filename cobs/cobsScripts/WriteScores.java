@@ -447,7 +447,7 @@ public class WriteScores
 		AlignmentLine aLine = a.getAnAlignmentLine(  toPDB.getPfamLine() );
 		String pFamSeq = aLine.getSequence().toUpperCase();
 		
-		HashMap<Integer, Integer> ungappedPfamToGappedPfamMap = new LinkedHashMap<>();
+		HashMap<Integer, Integer> ungappedPfamToGappedPfamMap = new LinkedHashMap<Integer, Integer>();
 		
 		StringBuffer ungappedPfam = new StringBuffer();
 		int ungappedPosition =-1;

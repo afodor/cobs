@@ -127,7 +127,7 @@ public class PfamToPDBBlastResults
 	
 	public static HashMap<String, PfamToPDBBlastResults> getAsMap() throws Exception
 	{
-		HashMap<String, PfamToPDBBlastResults>  map = new HashMap<>();
+		HashMap<String, PfamToPDBBlastResults>  map = new HashMap<String, PfamToPDBBlastResults>();
 		
 		File file = new File(ConfigReader.getPdbPfamChain());
 		

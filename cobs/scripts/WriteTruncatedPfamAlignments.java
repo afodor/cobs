@@ -31,7 +31,7 @@ public class WriteTruncatedPfamAlignments
 			
 		HashMap<String, PfamToPDBBlastResults> pdbMap= PfamToPDBBlastResults.getAsMap();
 			
-		File outFile = new File("c:\\temp\\pfamTruncated.txt");
+		File outFile = new File("pfamTruncated.txt");
 		
 		System.out.println(outFile.getAbsolutePath());
 		
@@ -62,6 +62,7 @@ public class WriteTruncatedPfamAlignments
 
 			if( writeLine)
 				writer.write(s + "\n");
+			writer.flush();
 		}
 		
 		writer.flush();  writer.close();

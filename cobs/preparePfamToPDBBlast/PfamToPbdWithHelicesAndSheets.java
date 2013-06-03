@@ -89,7 +89,7 @@ class PfamToPbdWithHelicesAndSheets
 		
 		reader.readLine();
 		
-		HashMap<String, PfamToPbdWithHelicesAndSheets> map = new HashMap<>();
+		HashMap<String, PfamToPbdWithHelicesAndSheets> map = new HashMap<String, PfamToPbdWithHelicesAndSheets>();
 		
 		for( String s= reader.readLine(); s!= null; s= reader.readLine())
 		{
