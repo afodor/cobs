@@ -57,6 +57,20 @@ public class PfamParser
 		
 		return aLine;	
 	}
+	
+	public Alignment getAnAlignment(String pfamId) throws Exception
+	{
+		for(Alignment a = getNextAlignment(); a != null; a = getNextAlignment())
+		{
+			System.out.println(a.getAligmentID());
+			
+			if( a.getAligmentID().equals(pfamId))
+				return a;
+		
+		}
+			
+		throw new Exception("Could not find ");
+	}
 
 
 	/**  gets the next alignment from the reader.
