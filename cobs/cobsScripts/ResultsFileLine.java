@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 
 import utils.Avevar;
-
+ 
 public final class ResultsFileLine
 {
 	//region1	region2	combinedType	score	averageDistance	minDistance
