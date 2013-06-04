@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Array;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 
@@ -129,7 +130,7 @@ public class PfamToPDBBlastResults
 	
 	public static HashMap<String, PfamToPDBBlastResults> getAsMap() throws Exception
 	{
-		HashMap<String, PfamToPDBBlastResults>  map = new HashMap<String, PfamToPDBBlastResults>();
+		HashMap<String, PfamToPDBBlastResults>  map = new LinkedHashMap<String, PfamToPDBBlastResults>();
 		
 		File file = new File(ConfigReader.getPdbPfamChain());
 		
