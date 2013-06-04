@@ -33,6 +33,7 @@ public class TestSuite1
 		suite.addTest(new TestSuite(TestMcBascAverage.class));
 		suite.addTest(new TestSuite(OmesCovarianceTest.class));
 		suite.addTest(new TestSuite(FactorialsTest.class));
+		suite.addTest(new TestSuite( TestNumberOfElements.class ));
 		//$JUnit-END$
 		return suite;
 	}
