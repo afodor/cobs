@@ -161,9 +161,9 @@ public final class ResultsFileLine
 				sum += rfl.score;
 				n++;
 			}
-			
 		}
-		double average = sum / inList.size();
+		
+		double average = sum / n;
 		
 		for( ResultsFileLine rfl : inList)
 		{
@@ -177,7 +177,10 @@ public final class ResultsFileLine
 		return returnList;
 	}
 	
-	private static HashMap<String, Double> breakByColumn(List<ResultsFileLine> list)
+	/*
+	 * Made public for testing
+	 */
+	public static HashMap<String, Double> breakByColumn(List<ResultsFileLine> list)
 		throws Exception
 	{
 		HashMap<String, List<Double>> map = new HashMap<String, List<Double>>();
