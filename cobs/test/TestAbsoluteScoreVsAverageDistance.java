@@ -36,6 +36,18 @@ public class TestAbsoluteScoreVsAverageDistance extends TestCase
 			assertEquals(list.size(), (int) Double.parseDouble(splits[7]));
 			ResultsFileLine rfl = getExactlyOne(list, splits[2], splits[3]);
 			assertEquals(rfl.getAverageDistance(), Double.parseDouble(splits[5]), 0.0001);
+			
+			int index = getExactlyOneIndex(list, splits[2], splits[3]);
+			
+			double percentile =100;
+			
+			if( index < list.size() -1 )
+				percentile = 100.0 *  ((double)index) / list.size();
+			
+			System.out.println("Expected percentile " + percentile);
+			
+			assertEquals(percentile, Double.parseDouble(splits[4]),0.0001);
+			
 			System.out.println(splits[1] + " " + splits[2]);
 		}
 		
@@ -61,6 +73,26 @@ public class TestAbsoluteScoreVsAverageDistance extends TestCase
 			{
 				assertTrue(returnVal == null);
 				returnVal = rfl;
+			}
+		}
+		
+		assertTrue(returnVal != null);
+		return returnVal;
+	}
+	
+
+	private static int getExactlyOneIndex(List<ResultsFileLine> list, String region1,String region2)
+	{
+		Integer returnVal =null;
+		
+		for(int x=0; x < list.size(); x++)
+		{
+			ResultsFileLine rfl = list.get(x);
+			
+			if(rfl.getRegion1().equals(region1) && rfl.getRegion2().equals(region2))
+			{
+				assertTrue(returnVal == null);
+				returnVal = x;
 			}
 		}
 		
