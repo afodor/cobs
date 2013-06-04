@@ -9,8 +9,6 @@ import java.util.Random;
 import junit.framework.TestCase;
 
 
-import utils.ConfigReader;
-
 import covariance.algorithms.ConservationSum;
 import covariance.algorithms.ScoreGenerator;
 import covariance.datacontainers.Alignment;
