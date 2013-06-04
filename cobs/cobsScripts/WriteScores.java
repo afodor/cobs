@@ -354,11 +354,11 @@ public class WriteScores
 		{
 			PdbResidue xResidue = wrapper.getChain(chain).getPdbResidueByPdbPosition(x);
 			
-			if( xResidue == null || xResidue.getCbAtom() == null){
+			if( xResidue == null || xResidue.getCbAtom() == null)
+			{
 				//Too verbose -- debug only use
 				System.out.println("WARNING:  " + wrapper.getFourCharId() + " " + chain + "  " +  x);
-			}
-				
+			}	
 			else
 			{
 				for( int y= yGroup.getStartPos(); y <= yGroup.getEndPos(); y++)

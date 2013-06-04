@@ -44,20 +44,20 @@ public class TestNumberOfElements extends TestCase
 		}
 	}
 	
-	private int getFirstElement(String s, char chainID)
+	static int getFirstElement(String s, char chainID)
 	{
 		StringTokenizer sToken = new StringTokenizer(s, "-");
 		return getPosition(sToken.nextToken(),chainID);
 	}
 	
-	private int getSecondElement(String s, char chainID)
+	static int getSecondElement(String s, char chainID)
 	{
 		StringTokenizer sToken = new StringTokenizer(s, "-");
 		sToken.nextToken();
 		return getPosition(sToken.nextToken(),chainID);
 	}
 	
-	private int getPosition( String s, char chainID)
+	static int getPosition( String s, char chainID)
 	{
 		StringBuffer buff = new StringBuffer();
 		
