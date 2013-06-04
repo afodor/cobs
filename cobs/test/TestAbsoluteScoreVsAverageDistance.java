@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import utils.ConfigReader;
 
 import junit.framework.TestCase;
 
-public class TestAsoluteScoreVsAverageDistance extends TestCase
+public class TestAbsoluteScoreVsAverageDistance extends TestCase
 {
 	/*
 	 * This assumes that AbsoluteScoreVsAverageDistance has been run and the results
@@ -41,6 +42,15 @@ public class TestAsoluteScoreVsAverageDistance extends TestCase
 		reader.close();
 	}
 	
+	private static class SortByAverageDistance implements Comparator<ResultsFileLine>
+	{
+		@Override
+		public int compare(ResultsFileLine arg0, ResultsFileLine arg1)
+		{
+			return Double.compare(arg0.getAverageDistance(), arg1.getAverageDistance());
+		}
+	}
+	
 	private static ResultsFileLine getExactlyOne(List<ResultsFileLine> list, String region1,String region2)
 	{
 		ResultsFileLine returnVal =null;
@@ -66,6 +76,16 @@ public class TestAsoluteScoreVsAverageDistance extends TestCase
 		{
 			list = ResultsFileLine.parseResultsFile(new File(ConfigReader.getCleanroom() + 
 					File.separator + "results" + File.separator + filename));
+			
+			java.util.Collections.sort(list, new SortByAverageDistance());
+			
+			double init =-1;
+			
+			for( ResultsFileLine rfl : list )
+			{
+				assertTrue(rfl.getAverageDistance() >= init);
+				init = rfl.getAverageDistance();
+			}
 			
 			cache.put(filename, list);
 		}
