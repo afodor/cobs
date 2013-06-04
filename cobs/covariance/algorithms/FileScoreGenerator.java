@@ -74,6 +74,11 @@ public class FileScoreGenerator implements ScoreGenerator
 		this(name,file,a,true,false);
 	}
 	
+	public FileScoreGenerator(String name, String filepath, Alignment a) throws Exception
+	{
+		this(name,new File(filepath),a,true,false);
+	}
+	
 	public FileScoreGenerator(String name, File file, Alignment a, boolean isSymmetrical, boolean reverseSort) throws Exception
 	{
 		this.name = name;

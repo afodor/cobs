@@ -308,6 +308,12 @@ public final class ResultsFileLine
 		return false;
 	}
 	
+
+	public static List<ResultsFileLine> parseResultsFile(String filePath) throws Exception
+	{
+		return parseResultsFile(new File(filePath));
+	}
+	
 	public static List<ResultsFileLine> parseResultsFile(File file) throws Exception
 	{
 		List<ResultsFileLine> list = new ArrayList<ResultsFileLine>();
