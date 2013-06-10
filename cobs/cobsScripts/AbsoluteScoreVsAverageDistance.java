@@ -19,13 +19,25 @@ public class AbsoluteScoreVsAverageDistance
 		double listSize;
 	}
 	
+//Here is what I saw from actual output
+//	AverageAbsMcBASC_PNormalInitial
+//	AverageAbsMcBASC
+//	AverageConservationSum_PNormalInitial
+//	AverageConservationSum
+//	AverageMcBASC_PNormalInitial
+//	AverageMcBASC
+//	AverageMI_PNormalInitial
+//	AverageMI
+//	Averagerandom
+//	COBS_UNCORRECTED    
+	
 	public static final String[]  FILE_NAMES = {
 		"AverageAbsMcBASC",
 		"AverageAbsMcBASC_PNormalInitial",
 		"AverageMcBASC_PNormalInitial", 
 		"AverageMcBASC", 
 		"COBS_UNCORRECTED",
-		"random_PNormalInitial",
+		"Averagerandom",
 		"AverageConservationSum_PNormalInitial",
 		"AverageConservationSum",
 		"AverageMI_PNormalInitial",
