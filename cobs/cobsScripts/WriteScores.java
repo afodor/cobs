@@ -231,7 +231,7 @@ public class WriteScores
 		directory.mkdirs();
 		
 		return new File( directory.getAbsolutePath() + File.separator + 
-				a.getAligmentID() + "_" + gci.getName() + ".txt" + 
+				a.getAligmentID() + "__" + gci.getName() + ".txt" + 
 				(ConfigReader.writeZippedResults() ? ".gz" : "")  );
 	}
 	
